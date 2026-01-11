@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Traduio.Runtime;
 
 namespace Traduio
 {
@@ -11,11 +10,10 @@ namespace Traduio
         private readonly float delay;
         private readonly Exception exception;
 
-        public ExceptionTranslationLoader(float delay, Exception exception, string id = "exception")
+        public ExceptionTranslationLoader(float delay, Exception exception)
         {
             this.delay = delay;
             this.exception = exception;
-            Id = id;
         }
 
         public async UniTask<IDictionary<string, string>> Load(CancellationToken cancellationToken)
@@ -24,6 +22,6 @@ namespace Traduio
             throw exception;
         }
 
-        public string Id { get; }
+        public string Id => "exception";
     }
 }

@@ -1,4 +1,4 @@
-namespace Traduio.Runtime
+namespace Traduio
 {
     public static class Traduio
     {

@@ -3,11 +3,11 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-namespace Traduio.Runtime
+namespace Traduio
 {
     public class ResourceTranslationLoader : ITranslationLoader
     {
-        public string Id => $"ResourceTranslationLoader_{path}";
+        public string Id => $"Resource[{path}]";
         
         private readonly string path;
 
