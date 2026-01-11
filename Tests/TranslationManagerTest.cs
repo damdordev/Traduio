@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
@@ -47,9 +48,9 @@ namespace Traduio
         [TestCase("key1",  "value1", 0f, ExpectedResult = null)]
         [TestCase("key2", "value2", 0f, ExpectedResult = null)]
         [TestCase("key3", "", 0f, ExpectedResult = null)]
-        [TestCase("key1",  "value1", 0.2f, ExpectedResult = null)]
-        [TestCase("key2", "value2", 0.2f, ExpectedResult = null)]
-        [TestCase("key3", "", 0.2f, ExpectedResult = null)]
+        [TestCase("key1",  "value1", 0.1f, ExpectedResult = null)]
+        [TestCase("key2", "value2", 0.1f, ExpectedResult = null)]
+        [TestCase("key3", "", 0.1f, ExpectedResult = null)]
         public IEnumerator TestSimpleGetTranslation(string key, string expected, float waitTime)
             => UniTask.ToCoroutine(async () =>
             {
@@ -105,6 +106,19 @@ namespace Traduio
                 Assert.AreEqual("otherValue1", manager.GetTranslation("otherKey1"));
                 Assert.AreEqual("otherValue2", manager.GetTranslation("otherKey2"));
                 Assert.AreEqual("value3", manager.GetTranslation("common"));
+            });
+
+        [UnityTest]
+        [TestCase(0f, ExpectedResult = null)]
+        [TestCase(0.1f, ExpectedResult = null)]
+        public IEnumerator TestIfLoaderWithExceptionDoesntBreakManager(float delay)
+            => UniTask.ToCoroutine(async () =>
+            {
+                var manager = new TranslationManager();
+                var loader = new ExceptionTranslationLoader(delay, new ArgumentException());
+                manager.AddLoader(loader);
+                manager.Load();
+                await manager.WaitForLoad().Timeout(TimeSpan.FromSeconds(2));
             });
 
     }
