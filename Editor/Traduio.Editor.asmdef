@@ -1,0 +1,16 @@
+{
+    "name": "Traduio.Editor",
+    "rootNamespace": "Traduio.Editor",
+    "references": [
+        "GUID:faea1ad9e05b582f9bffd6ba566d0296"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
