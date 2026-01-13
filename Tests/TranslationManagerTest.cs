@@ -528,51 +528,6 @@ namespace Traduio
             });
 
         [UnityTest]
-        public IEnumerator TestIfUpdateIsInvokedAfterTranslationsAreLoaded()
-            => UniTask.ToCoroutine(async () =>
-            {
-                var updateCount = 0;
-                manager.Updated += () => { ++updateCount; };
-                var loader = new TestTranslationLoader(TestTranslations, 0f);
-                manager.AddLoader(loader);
-                manager.Load();
-                await manager.WaitForLoad();
-                
-                Assert.AreEqual(1, updateCount);
-            });
-        
-        [UnityTest]
-        public IEnumerator TestIfUpdateIsInvokedAfterEachTimeTranslationsAreLoaded()
-            => UniTask.ToCoroutine(async () =>
-            {
-                var updateCount = 0;
-                manager.Updated += () => { ++updateCount; };
-                var loader = new TestTranslationLoader(TestTranslations, 0f);
-                var loader2 = new TestTranslationLoader(OtherTestTranslations, 0f);
-                manager.AddLoader(loader);
-                manager.AddLoader(loader2);
-                manager.Load();
-                await manager.WaitForLoad();
-                
-                Assert.AreEqual(2, updateCount);
-            });
-        
-        [UnityTest]
-        public IEnumerator TestIfUpdateIsInvokedAfterTranslationProcessorIsChanged()
-            => UniTask.ToCoroutine(async () =>
-            {
-                var updateCount = 0;
-                manager.Updated += () => { ++updateCount; };
-                manager.SetTranslationProcessor((key, translation, loader) => translation);
-                var loader = new TestTranslationLoader(TestTranslations, 0f);
-                manager.AddLoader(loader);
-                manager.Load();
-                await manager.WaitForLoad();
-                
-                Assert.AreEqual(2, updateCount);
-            });
-
-        [UnityTest]
         public IEnumerator TestDefaultPriority()
             => UniTask.ToCoroutine(async () =>
             {

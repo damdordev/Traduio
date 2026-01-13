@@ -10,8 +10,6 @@ namespace Traduio
 {
     public class TranslationManager : IDisposable
     {
-        public event Action Updated = () => { };
-
         public bool LogLoaderErrors { get; set; } = true;
 
         private List<LoaderData> loaders = new();
@@ -104,11 +102,8 @@ namespace Traduio
         public void SetMissingTranslationErrorHandler(MissingTranslationErrorHandler handler) 
             => missingTranslationErrorHandler = handler;
 
-        public void SetTranslationProcessor(TranslationProcessor processor)
-        {
-            translationProcessor = processor;
-            Updated();
-        }
+        public void SetTranslationProcessor(TranslationProcessor processor) 
+            => translationProcessor = processor;
 
         private async UniTask Load(LoaderData data)
         {
@@ -142,7 +137,6 @@ namespace Traduio
 
             data.CancellationTokenSource?.Dispose();
             data.CancellationTokenSource = null;
-            if (data.Translations != null) Updated();
         }
 
         private static bool IsLoadFinished(List<LoaderData> loaders)
