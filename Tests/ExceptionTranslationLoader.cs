@@ -16,7 +16,7 @@ namespace Traduio
             this.exception = exception;
         }
 
-        public async UniTask<IDictionary<string, string>> Load(CancellationToken cancellationToken)
+        public async UniTask<ITranslationLibrary> Load(CancellationToken cancellationToken)
         {
             if(delay > 0f) await UniTask.Delay(TimeSpan.FromSeconds(delay), cancellationToken:  cancellationToken);
             throw exception;

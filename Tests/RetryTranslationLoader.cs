@@ -20,7 +20,7 @@ namespace Traduio
             this.retries = retries;
         }
 
-        public async UniTask<IDictionary<string, string>> Load(CancellationToken cancellationToken)
+        public async UniTask<ITranslationLibrary> Load(CancellationToken cancellationToken)
         {
             ++LoadCount;
             if (delay > 0f) await UniTask.Delay(TimeSpan.FromSeconds(delay), cancellationToken : cancellationToken);
@@ -30,7 +30,7 @@ namespace Traduio
                 throw new ArgumentException();
             }
 
-            return translations;
+            return new DictionaryTranslationLibrary(translations);
         }
 
         public string Id => "retry";

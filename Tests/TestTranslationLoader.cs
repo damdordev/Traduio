@@ -20,12 +20,12 @@ namespace Traduio
             this.delay = delay;
         }
         
-        public async UniTask<IDictionary<string, string>> Load(CancellationToken cancellationToken)
+        public async UniTask<ITranslationLibrary> Load(CancellationToken cancellationToken)
         {
             this.cancellationToken = cancellationToken;
             ++LoadCounter;
             if(delay > 0f) await UniTask.Delay(TimeSpan.FromSeconds(delay), cancellationToken : cancellationToken);
-            return translations;
+            return new DictionaryTranslationLibrary(translations);
         }
 
         public string Id => "test";

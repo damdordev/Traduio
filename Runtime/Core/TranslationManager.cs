@@ -16,7 +16,7 @@ namespace Traduio
         private class LoaderData
         {
             public ITranslationLoader Loader;
-            public IDictionary<string, string> Translations;
+            public ITranslationLibrary Translations;
             public bool LoadFinished;
             public CancellationTokenSource CancellationTokenSource;
             public bool IsRemoved;
@@ -79,9 +79,9 @@ namespace Traduio
             if (key == null) key = "";
             foreach (var data in loaders)
             {
-                if (data.LoadFinished && data.Translations != null && data.Translations.TryGetValue(key, out var translation))
+                if (data.LoadFinished && data.Translations != null && data.Translations.HasTranslation(key))
                 {
-                    return Process(key, translation, data.Loader);
+                    return Process(key, data.Translations.GetTranslation(key), data.Loader);
                 }
             }
 
@@ -102,7 +102,7 @@ namespace Traduio
             if (key == null) key = "";
             foreach (var data in loaders)
             {
-                if (data.LoadFinished && data.Translations != null && data.Translations.ContainsKey(key)) return true;
+                if (data.LoadFinished && data.Translations != null && data.Translations.HasTranslation(key)) return true;
             }
 
             return false;
