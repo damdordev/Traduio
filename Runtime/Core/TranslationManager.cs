@@ -13,7 +13,7 @@ namespace Traduio
     {
         public event Action Updated = () => { };
 
-        private class LoaderData
+        private class LoaderData : ITranslationLoaderSettings
         {
             public ITranslationLoader Loader;
             public ITranslationLibrary Translations;
@@ -22,6 +22,18 @@ namespace Traduio
             public bool IsRemoved;
             public int Priority;
             public int RetriesLeft;
+            
+            public ITranslationLoaderSettings WithPriority(int priority)
+            {
+                Priority = priority;
+                return this;
+            }
+
+            public ITranslationLoaderSettings WithRetries(int retries)
+            {
+                RetriesLeft = retries;
+                return this;
+            }
         }
 
         public bool LogLoaderErrors { get; set; } = true;
@@ -31,17 +43,16 @@ namespace Traduio
         private MissingTranslationErrorHandler missingTranslationErrorHandler;
         private TranslationProcessor translationProcessor;
         
-        public void AddLoader(ITranslationLoader loader, int priority = 0, int retriesCount = 0)
+        public ITranslationLoaderSettings AddLoader(ITranslationLoader loader)
         {
             foreach (var loaderData in loaders)
             {
-                if (loaderData.Loader == loader) return;
+                if (loaderData.Loader == loader) return loaderData;
             }
 
-            var index = loaders.FindIndex(d => d.Priority > priority);
-            var data = new LoaderData { Loader = loader, Priority = priority, RetriesLeft = retriesCount };
-            if(index == -1) loaders.Add(data);
-            else loaders.Insert(index, data);
+            var data = new LoaderData { Loader = loader };
+            loaders.Add(data);
+            return data;
         }
 
         public void RemoveLoader(ITranslationLoader loader)
@@ -58,6 +69,9 @@ namespace Traduio
 
         public void Load()
         {
+            loaders = loaders
+                .OrderBy(l => l.Priority)
+                .ToList();
             foreach (var data in loaders)
             {
                 Load(data).Forget();

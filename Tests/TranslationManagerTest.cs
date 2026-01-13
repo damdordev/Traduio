@@ -578,8 +578,10 @@ namespace Traduio
             {
                 var loader = new TestTranslationLoader(TestTranslations, 0f);
                 var loader2 = new TestTranslationLoader(OtherTestTranslations, 0f);
-                manager.AddLoader(loader, 0);
-                manager.AddLoader(loader2, 0);
+                manager.AddLoader(loader)
+                    .WithPriority(0);
+                manager.AddLoader(loader2)
+                    .WithPriority(0);
                 manager.Load();
                 await manager.WaitForLoad();
                 
@@ -592,8 +594,10 @@ namespace Traduio
             {
                 var loader = new TestTranslationLoader(TestTranslations, 0f);
                 var loader2 = new TestTranslationLoader(OtherTestTranslations, 0f);
-                manager.AddLoader(loader, 1);
-                manager.AddLoader(loader2, 2);
+                manager.AddLoader(loader)
+                    .WithPriority(1);
+                manager.AddLoader(loader2)
+                    .WithPriority(2);
                 manager.Load();
                 await manager.WaitForLoad();
                 
@@ -606,8 +610,10 @@ namespace Traduio
             {
                 var loader = new TestTranslationLoader(TestTranslations, 0f);
                 var loader2 = new TestTranslationLoader(OtherTestTranslations, 0f);
-                manager.AddLoader(loader, 2);
-                manager.AddLoader(loader2, 1);
+                manager.AddLoader(loader)
+                    .WithPriority(2);
+                manager.AddLoader(loader2)
+                    .WithPriority(1);
                 manager.Load();
                 await manager.WaitForLoad();
                 
@@ -632,7 +638,8 @@ namespace Traduio
                     ++errorCount;
                 });
                 var loader = new RetryTranslationLoader(TestTranslations, 0.1f, requiredRetries);
-                manager.AddLoader(loader, retriesCount: maxRetries);
+                manager.AddLoader(loader)
+                    .WithRetries(maxRetries);
                 manager.Load();
                 await manager.WaitForLoad().Timeout(TimeSpan.FromSeconds(5f));
 
