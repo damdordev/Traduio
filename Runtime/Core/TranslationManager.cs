@@ -143,7 +143,9 @@ namespace Traduio
             data.CancellationTokenSource = new CancellationTokenSource();
             try
             {
-                data.Translations = await data.Loader.Load(data.CancellationTokenSource.Token);
+                var task = data.Loader.Load(data.CancellationTokenSource.Token);
+                if(data.Timeout != TimeSpan.Zero) task = task.Timeout(data.Timeout);
+                data.Translations = await task;
                 if (data.Translations == null) throw new EmptyTranslationException();
             }
             catch (Exception e)

@@ -647,6 +647,34 @@ namespace Traduio
                 Assert.AreEqual(expectedLoads, loader.LoadCount);
                 Assert.AreEqual(expectedSuccess, manager.HasTranslation("key1"));
             });
-        
+
+        [UnityTest]
+        [TestCase(1, 2, true, ExpectedResult = null)]
+        [TestCase(2, 1, false, ExpectedResult = null)]
+        [TestCase(2, 0, true, ExpectedResult = null)]
+        public IEnumerator TestTimeout(float loadTime, float timeout, bool success)
+            => UniTask.ToCoroutine(async () =>
+            {
+                Exception e = null;
+                manager.SetLoaderErrorHandler((_, exception) =>
+                {
+                    e = exception;
+                });
+                var loader = new TestTranslationLoader(TestTranslations, loadTime);
+                manager.AddLoader(loader)
+                    .WithTimeout(TimeSpan.FromSeconds(timeout));
+                manager.Load();
+                await manager.WaitForLoad();
+
+                if (success)
+                {
+                    Assert.IsNull(e);
+                }
+                else
+                {
+                    Assert.IsInstanceOf<TimeoutException>(e);
+                }
+            });
+
     }
 }
