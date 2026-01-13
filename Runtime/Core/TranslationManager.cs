@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
@@ -12,29 +11,6 @@ namespace Traduio
     public class TranslationManager : IDisposable
     {
         public event Action Updated = () => { };
-
-        private class LoaderData : ITranslationLoaderSettings
-        {
-            public ITranslationLoader Loader;
-            public ITranslationLibrary Translations;
-            public bool LoadFinished;
-            public CancellationTokenSource CancellationTokenSource;
-            public bool IsRemoved;
-            public int Priority;
-            public int RetriesLeft;
-            
-            public ITranslationLoaderSettings WithPriority(int priority)
-            {
-                Priority = priority;
-                return this;
-            }
-
-            public ITranslationLoaderSettings WithRetries(int retries)
-            {
-                RetriesLeft = retries;
-                return this;
-            }
-        }
 
         public bool LogLoaderErrors { get; set; } = true;
 
