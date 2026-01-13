@@ -37,7 +37,7 @@ namespace Traduio
             {
                 if(loaders[i].Loader != loader) continue;
                 loaders[i].IsRemoved = true;
-                if(loaders[i].CancellationTokenSource != null) loaders[i].CancellationTokenSource.Cancel();
+                loaders[i].Cancel();
                 loaders.RemoveAt(i);
                 --i;
             }
@@ -48,19 +48,12 @@ namespace Traduio
             loaders = loaders
                 .OrderBy(l => l.Priority)
                 .ToList();
-            foreach (var data in loaders)
-            {
-                Load(data).Forget();
-            }
+            foreach (var data in loaders) Load(data).Forget();
         }
 
         public void Dispose()
         {
-            foreach (var t in loaders)
-            {
-                t.CancellationTokenSource?.Cancel();
-            }
-
+            foreach (var t in loaders) t.Cancel();
             loaders.Clear();
         }
 
@@ -69,20 +62,14 @@ namespace Traduio
             if (key == null) key = "";
             foreach (var data in loaders)
             {
-                if (data.LoadFinished && data.Translations != null && data.Translations.HasTranslation(key))
+                if (data.Translations != null && data.Translations.HasTranslation(key))
                 {
                     return Process(key, data.Translations.GetTranslation(key), data.Loader);
                 }
             }
 
-            try
-            {
-                missingTranslationErrorHandler?.Invoke(key);
-            }
-            catch (Exception e)
-            {
-                
-            }
+            try { missingTranslationErrorHandler?.Invoke(key); }
+            catch (Exception) { /* ignore */ }
 
             return Process(key, "{missing:" + key + "}", null);
         }
@@ -104,22 +91,18 @@ namespace Traduio
             var currentLoaders = ListPool<LoaderData>.Get();
             foreach (var loaderData in loaders)
             {
-                if(!loaderData.LoadFinished && loaderData.CancellationTokenSource != null) currentLoaders.Add(loaderData);
+                if(loaderData.CancellationTokenSource != null) currentLoaders.Add(loaderData);
             }
 
             await UniTask.WaitUntil(() => IsLoadFinished(currentLoaders), cancellationToken: cancellationToken);
             ListPool<LoaderData>.Release(currentLoaders);
         }
 
-        public void SetLoaderErrorHandler(LoaderErrorHandler handler)
-        {
-            loaderErrorHandler = handler;
-        }
+        public void SetLoaderErrorHandler(LoaderErrorHandler handler) 
+            => loaderErrorHandler = handler;
 
-        public void SetMissingTranslationErrorHandler(MissingTranslationErrorHandler handler)
-        {
-            missingTranslationErrorHandler = handler;
-        }
+        public void SetMissingTranslationErrorHandler(MissingTranslationErrorHandler handler) 
+            => missingTranslationErrorHandler = handler;
 
         public void SetTranslationProcessor(TranslationProcessor processor)
         {
@@ -151,16 +134,10 @@ namespace Traduio
             catch (Exception e)
             {
                 data.Translations = null;
-                if (LogLoaderErrors)
-                    Debug.LogError($"Error during loading translation from [{data.Loader.Id}]: {e.Message}");
-                try
-                {
-                    loaderErrorHandler?.Invoke(data.Loader, e);
-                }
-                catch (Exception)
-                {
-                    // ignored
-                }
+                if (LogLoaderErrors) Debug.LogError($"Error during loading translation from [{data.Loader.Id}]: {e.Message}");
+                
+                try { loaderErrorHandler?.Invoke(data.Loader, e); }
+                catch (Exception) { /* ignored */ }
             }
 
             data.CancellationTokenSource?.Dispose();
@@ -180,14 +157,8 @@ namespace Traduio
         private string Process(string key, string translation, ITranslationLoader loader)
         {
             if (translationProcessor == null) return translation;
-            try
-            {
-                translation = translationProcessor(key, translation, loader);
-            }
-            catch (Exception)
-            {
-                // ignore
-            }
+            try { translation = translationProcessor(key, translation, loader); }
+            catch (Exception) { /* ignore */ }
             return translation;
         }
         

@@ -38,6 +38,13 @@ namespace Traduio
             Timeout = timeout;
             return this;
         }
+
+        public void Cancel()
+        {
+            CancellationTokenSource?.Cancel();
+            CancellationTokenSource = null;
+        }
+        
     }
     
 }
