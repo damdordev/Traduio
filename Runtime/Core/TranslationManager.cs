@@ -10,6 +10,8 @@ namespace Traduio
 {
     public class TranslationManager : IDisposable
     {
+        public event Action Refresh = () => { };
+
         public bool LogLoaderErrors { get; set; } = true;
 
         private List<LoaderData> loaders = new();
@@ -104,6 +106,8 @@ namespace Traduio
 
         public void SetTranslationProcessor(TranslationProcessor processor) 
             => translationProcessor = processor;
+        
+        public void RefreshTargets() => Refresh.Invoke();
 
         private async UniTask Load(LoaderData data)
         {

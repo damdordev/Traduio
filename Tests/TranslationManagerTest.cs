@@ -631,5 +631,28 @@ namespace Traduio
                 }
             });
 
+        [UnityTest]
+        public IEnumerator TestIfEventRefreshIsInvokedAfterRefreshTargets()
+            => UniTask.ToCoroutine( () =>
+            {
+                var refreshCount = 0;
+                manager.Refresh += () => ++refreshCount; 
+                manager.RefreshTargets();
+                
+                Assert.AreEqual(1, refreshCount);
+                return UniTask.CompletedTask;
+            });
+        
+        [UnityTest]
+        public IEnumerator TestIfEventRefreshIsNotInvokedAfterLoad()
+            => UniTask.ToCoroutine( async () =>
+            {
+                var refreshCount = 0;
+                manager.Refresh += () => ++refreshCount; 
+                await manager.WaitForLoad();
+                
+                Assert.AreEqual(0, refreshCount);
+            });
+        
     }
 }
