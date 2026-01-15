@@ -16,7 +16,8 @@ namespace Traduio
         {
             { "key1", "value1" },
             { "key2", "value2" },
-            { "common", "value3" }
+            { "common", "value3" },
+            { "keyWithParameter", "Parameter value: {value}" }
         };
         
         private readonly Dictionary<string, string> OtherTestTranslations = new()
@@ -652,6 +653,106 @@ namespace Traduio
                 await manager.WaitForLoad();
                 
                 Assert.AreEqual(0, refreshCount);
+            });
+        
+        [UnityTest]
+        [TestCase(TranslationPointerMode.RawText, "key1", "key1", ExpectedResult = null)]
+        [TestCase(TranslationPointerMode.Translation, "key1", "value1", ExpectedResult = null)]
+        public IEnumerator TestTranslationPointerWithoutNullParameters(TranslationPointerMode mode, string value, string expectedValue)
+            => UniTask.ToCoroutine( async () =>
+            {
+                var loader = new TestTranslationLoader(TestTranslations, 0f);
+                manager.AddLoader(loader);
+                manager.Load();
+                await manager.WaitForLoad();
+
+                var pointer = new TranslationPointer
+                {
+                    Mode = mode,
+                    Value = value
+                };
+                
+                Assert.AreEqual(expectedValue, manager.Translate(pointer, null));
+            });
+        
+        [UnityTest]
+        [TestCase(TranslationPointerMode.RawText, "key1", "key1", ExpectedResult = null)]
+        [TestCase(TranslationPointerMode.Translation, "key1", "value1", ExpectedResult = null)]
+        public IEnumerator TestTranslationPointerWithoutEmptyParameters(TranslationPointerMode mode, string value, string expectedValue)
+            => UniTask.ToCoroutine( async () =>
+            {
+                var loader = new TestTranslationLoader(TestTranslations, 0f);
+                manager.AddLoader(loader);
+                manager.Load();
+                await manager.WaitForLoad();
+
+                var pointer = new TranslationPointer
+                {
+                    Mode = mode,
+                    Value = value
+                };
+                
+                Assert.AreEqual(expectedValue, manager.Translate(pointer, new List<TranslationParameter>()));
+            });
+        
+        [UnityTest]
+        [TestCase(
+            TranslationPointerMode.RawText, "key1",
+            "value", TranslationPointerMode.RawText, "key1",
+            "key1",
+            ExpectedResult = null)]
+        [TestCase(
+            TranslationPointerMode.Translation, "key1",
+            "value", TranslationPointerMode.RawText, "key1",
+            "value1",
+            ExpectedResult = null)]
+        [TestCase(
+            TranslationPointerMode.RawText, "keyWithParameter",
+            "value", TranslationPointerMode.RawText, "key1",
+            "keyWithParameter",
+            ExpectedResult = null)]
+        [TestCase(
+            TranslationPointerMode.Translation, "keyWithParameter",
+            "value", TranslationPointerMode.RawText, "key1",
+            "Parameter value: key1",
+            ExpectedResult = null)]
+        [TestCase(
+            TranslationPointerMode.Translation, "keyWithParameter",
+            "value", TranslationPointerMode.Translation, "key1",
+            "Parameter value: value1",
+            ExpectedResult = null)]    
+        [TestCase(
+            TranslationPointerMode.Translation, "keyWithParameter",
+            "noExisting", TranslationPointerMode.Translation, "key1",
+            "Parameter value: {value}",
+            ExpectedResult = null)]         
+        public IEnumerator TestTranslationWithParameter(
+            TranslationPointerMode mode, string value,
+            string parameterKey, TranslationPointerMode parameterMode, string parameterValue,
+            string expectedValue)
+            => UniTask.ToCoroutine( async () =>
+            {
+                var loader = new TestTranslationLoader(TestTranslations, 0f);
+                manager.AddLoader(loader);
+                manager.Load();
+                await manager.WaitForLoad();
+
+                var pointer = new TranslationPointer
+                {
+                    Mode = mode,
+                    Value = value
+                };
+                var parameter = new TranslationParameter
+                {
+                    Key = parameterKey, Value = new TranslationPointer
+                    {
+                        Mode = parameterMode,
+                        Value = parameterValue,
+                    }
+                };
+                var parameters = new List<TranslationParameter> { parameter };
+                
+                Assert.AreEqual(expectedValue, manager.Translate(pointer, parameters));
             });
         
     }

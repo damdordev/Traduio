@@ -85,6 +85,35 @@ namespace Traduio
             return false;
         }
 
+        public string Translate(TranslationPointer pointer, List<TranslationParameter> parameters)
+        {
+            if (string.IsNullOrWhiteSpace(pointer.Value)) return "";
+            var value = EvaluateTextPointer(pointer);
+            if (parameters != null && parameters.Count > 0)
+            {
+                foreach (var parameter in parameters)
+                {
+                    if(string.IsNullOrWhiteSpace(parameter.Key)) continue;
+                    value = value.Replace("{" + parameter.Key + "}", EvaluateTextPointer(parameter.Value));
+                }
+            }
+
+            return value;
+
+        }
+        
+        public string EvaluateTextPointer(TranslationPointer pointer)
+        {
+            if (string.IsNullOrWhiteSpace(pointer.Value)) return "";
+            return pointer.Mode switch
+            {
+                TranslationPointerMode.RawText => pointer.Value,
+                TranslationPointerMode.Translation => GetTranslation(pointer.Value),
+                _ => throw new ArgumentOutOfRangeException($"Incorrect pointer mode: {pointer.Mode}")
+            };
+        }
+
+
         public async UniTask WaitForLoad(CancellationToken cancellationToken = default)
         {
             if (IsLoadFinished(loaders)) return;
