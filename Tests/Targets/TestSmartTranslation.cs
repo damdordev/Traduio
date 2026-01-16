@@ -9,7 +9,7 @@ namespace Traduio
         public List<string> Applies = new();
 
         protected override TranslationManagerPointer ManagerPointer => Pointer;
-
+        
         protected override void Apply(string text)
         {
             Applies.Add(text);

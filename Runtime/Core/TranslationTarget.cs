@@ -100,7 +100,7 @@ namespace Traduio
         public void CommitChanges()
         {
             duringChanges = false;
-            Refresh();
+            if(needRefresh) Refresh();
         }
         
         /// <summary>
