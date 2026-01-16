@@ -656,9 +656,9 @@ namespace Traduio
             });
         
         [UnityTest]
-        [TestCase(TranslationPointerMode.RawText, "key1", "key1", ExpectedResult = null)]
-        [TestCase(TranslationPointerMode.Translation, "key1", "value1", ExpectedResult = null)]
-        public IEnumerator TestTranslationPointerWithoutNullParameters(TranslationPointerMode mode, string value, string expectedValue)
+        [TestCase(TranslationRootMode.RawText, "key1", "key1", ExpectedResult = null)]
+        [TestCase(TranslationRootMode.Translation, "key1", "value1", ExpectedResult = null)]
+        public IEnumerator TestTranslationPointerWithoutNullParameters(TranslationRootMode mode, string value, string expectedValue)
             => UniTask.ToCoroutine( async () =>
             {
                 var loader = new TestTranslationLoader(TestTranslations, 0f);
@@ -666,7 +666,7 @@ namespace Traduio
                 manager.Load();
                 await manager.WaitForLoad();
 
-                var pointer = new TranslationPointer
+                var pointer = new TranslationRoot
                 {
                     Mode = mode,
                     Value = value
@@ -676,9 +676,9 @@ namespace Traduio
             });
         
         [UnityTest]
-        [TestCase(TranslationPointerMode.RawText, "key1", "key1", ExpectedResult = null)]
-        [TestCase(TranslationPointerMode.Translation, "key1", "value1", ExpectedResult = null)]
-        public IEnumerator TestTranslationPointerWithoutEmptyParameters(TranslationPointerMode mode, string value, string expectedValue)
+        [TestCase(TranslationRootMode.RawText, "key1", "key1", ExpectedResult = null)]
+        [TestCase(TranslationRootMode.Translation, "key1", "value1", ExpectedResult = null)]
+        public IEnumerator TestTranslationPointerWithoutEmptyParameters(TranslationRootMode mode, string value, string expectedValue)
             => UniTask.ToCoroutine( async () =>
             {
                 var loader = new TestTranslationLoader(TestTranslations, 0f);
@@ -686,7 +686,7 @@ namespace Traduio
                 manager.Load();
                 await manager.WaitForLoad();
 
-                var pointer = new TranslationPointer
+                var pointer = new TranslationRoot
                 {
                     Mode = mode,
                     Value = value
@@ -697,38 +697,38 @@ namespace Traduio
         
         [UnityTest]
         [TestCase(
-            TranslationPointerMode.RawText, "key1",
-            "value", TranslationPointerMode.RawText, "key1",
+            TranslationRootMode.RawText, "key1",
+            "value", TranslationRootMode.RawText, "key1",
             "key1",
             ExpectedResult = null)]
         [TestCase(
-            TranslationPointerMode.Translation, "key1",
-            "value", TranslationPointerMode.RawText, "key1",
+            TranslationRootMode.Translation, "key1",
+            "value", TranslationRootMode.RawText, "key1",
             "value1",
             ExpectedResult = null)]
         [TestCase(
-            TranslationPointerMode.RawText, "keyWithParameter",
-            "value", TranslationPointerMode.RawText, "key1",
+            TranslationRootMode.RawText, "keyWithParameter",
+            "value", TranslationRootMode.RawText, "key1",
             "keyWithParameter",
             ExpectedResult = null)]
         [TestCase(
-            TranslationPointerMode.Translation, "keyWithParameter",
-            "value", TranslationPointerMode.RawText, "key1",
+            TranslationRootMode.Translation, "keyWithParameter",
+            "value", TranslationRootMode.RawText, "key1",
             "Parameter value: key1",
             ExpectedResult = null)]
         [TestCase(
-            TranslationPointerMode.Translation, "keyWithParameter",
-            "value", TranslationPointerMode.Translation, "key1",
+            TranslationRootMode.Translation, "keyWithParameter",
+            "value", TranslationRootMode.Translation, "key1",
             "Parameter value: value1",
             ExpectedResult = null)]    
         [TestCase(
-            TranslationPointerMode.Translation, "keyWithParameter",
-            "noExisting", TranslationPointerMode.Translation, "key1",
+            TranslationRootMode.Translation, "keyWithParameter",
+            "noExisting", TranslationRootMode.Translation, "key1",
             "Parameter value: {value}",
             ExpectedResult = null)]         
         public IEnumerator TestTranslationWithParameter(
-            TranslationPointerMode mode, string value,
-            string parameterKey, TranslationPointerMode parameterMode, string parameterValue,
+            TranslationRootMode mode, string value,
+            string parameterKey, TranslationRootMode parameterMode, string parameterValue,
             string expectedValue)
             => UniTask.ToCoroutine( async () =>
             {
@@ -737,14 +737,14 @@ namespace Traduio
                 manager.Load();
                 await manager.WaitForLoad();
 
-                var pointer = new TranslationPointer
+                var pointer = new TranslationRoot
                 {
                     Mode = mode,
                     Value = value
                 };
                 var parameter = new TranslationParameter
                 {
-                    Key = parameterKey, Value = new TranslationPointer
+                    Key = parameterKey, Value = new TranslationRoot
                     {
                         Mode = parameterMode,
                         Value = parameterValue,

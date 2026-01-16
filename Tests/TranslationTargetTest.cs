@@ -14,7 +14,9 @@ namespace Traduio
         private readonly Dictionary<string, string> TestTranslations = new()
         {
             { "key1", "value1" },
-            { "key2", "value2" }
+            { "key2", "value2" },
+            { "keyWithParameter", "begin {parameter} end"},
+            { "otherKeyWithParameter", "other begin {parameter} end"}
         };
         
         private readonly Dictionary<string, string> TestTranslations2 = new()
@@ -265,12 +267,162 @@ namespace Traduio
                 CollectionAssert.AreEqual(new[] { "value1", "otherValue1" }, target.Applies);
             });
         
+        [UnityTest]
+        public IEnumerator TestIfChangingRootAppliesText()
+            => UniTask.ToCoroutine(async () =>
+            {
+                await LoadTargetWithParameter();
+                target.Root = new TranslationRoot
+                {
+                    Mode = TranslationRootMode.Translation,
+                    Value = "otherKeyWithParameter"
+                };
+               
+                CollectionAssert.AreEqual(new[] { "begin {parameter} end", "other begin {parameter} end" }, target.Applies);
+            });
+        
+        [UnityTest]
+        public IEnumerator TestIfChangingRootAppliesTextAfterEnabled()
+            => UniTask.ToCoroutine(async () =>
+            {
+                await LoadTargetWithParameter();
+                target.enabled = false;
+                target.Root = new TranslationRoot
+                {
+                    Mode = TranslationRootMode.Translation,
+                    Value = "otherKeyWithParameter"
+                };
+               
+                CollectionAssert.AreEqual(new[] { "begin {parameter} end" }, target.Applies);
+                target.enabled = true;
+                CollectionAssert.AreEqual(new[] { "begin {parameter} end", "other begin {parameter} end" }, target.Applies);
+            });
+        
+        [UnityTest]
+        public IEnumerator TestIfStartChangesSuppressApply()
+            => UniTask.ToCoroutine(async () =>
+            {
+                await LoadTargetWithParameter();
+                target.StartChanges();
+                target.Root = new TranslationRoot
+                {
+                    Mode = TranslationRootMode.Translation,
+                    Value = "otherKeyWithParameter"
+                };
+               
+                CollectionAssert.AreEqual(new[] { "begin {parameter} end" }, target.Applies);
+                target.CommitChanges();
+                CollectionAssert.AreEqual(new[] { "begin {parameter} end", "other begin {parameter} end" }, target.Applies);
+            });
+        
+        [UnityTest]
+        public IEnumerator TestIfCommitChangesDoesntApplyWhenTargetIsDisabled()
+            => UniTask.ToCoroutine(async () =>
+            {
+                await LoadTargetWithParameter();
+                target.enabled = false;
+                target.StartChanges();
+                target.Root = new TranslationRoot
+                {
+                    Mode = TranslationRootMode.Translation,
+                    Value = "otherKeyWithParameter"
+                };
+               
+                CollectionAssert.AreEqual(new[] { "begin {parameter} end" }, target.Applies);
+                target.CommitChanges();
+                CollectionAssert.AreEqual(new[] { "begin {parameter} end" }, target.Applies);
+                target.enabled = true;
+                CollectionAssert.AreEqual(new[] { "begin {parameter} end", "other begin {parameter} end" }, target.Applies);
+            });
+
+        [UnityTest]
+        public IEnumerator TestIfEnableDoesntApplyWhenDuringChanges()
+            => UniTask.ToCoroutine(async () =>
+            {
+                await LoadTargetWithParameter();
+                target.enabled = false;
+                target.StartChanges();
+                target.Root = new TranslationRoot
+                {
+                    Mode = TranslationRootMode.Translation,
+                    Value = "otherKeyWithParameter"
+                };
+               
+                CollectionAssert.AreEqual(new[] { "begin {parameter} end" }, target.Applies);
+                target.enabled = true;
+                CollectionAssert.AreEqual(new[] { "begin {parameter} end" }, target.Applies);
+                target.CommitChanges();
+                CollectionAssert.AreEqual(new[] { "begin {parameter} end", "other begin {parameter} end" }, target.Applies);
+            });
+        
+        [UnityTest]
+        public IEnumerator TestIfSettingParameterAppliesText()
+            => UniTask.ToCoroutine(async () =>
+            {
+                await LoadTargetWithParameter();
+                target.SetParameter("parameter", new TranslationRoot
+                {
+                    Mode = TranslationRootMode.RawText,
+                    Value = "xyz"
+                });
+                target.SetParameter("parameter", new TranslationRoot
+                {
+                    Mode = TranslationRootMode.RawText,
+                    Value = "abc"
+                });
+               
+                CollectionAssert.AreEqual(new[] { "begin {parameter} end", "begin xyz end", "begin abc end" }, target.Applies);
+            });
+        
+        [UnityTest]
+        public IEnumerator TestIfClearParametersAppliesText()
+            => UniTask.ToCoroutine(async () =>
+            {
+                await LoadTargetWithParameter();
+                target.SetParameter("parameter", new TranslationRoot
+                {
+                    Mode = TranslationRootMode.RawText,
+                    Value = "xyz"
+                });
+                target.ClearParameters();
+               
+                CollectionAssert.AreEqual(new[] { "begin {parameter} end", "begin xyz end", "other begin {parameter} end" }, target.Applies);
+            });
+        
+        [UnityTest]
+        public IEnumerator TestIfRemovingParametersAppliesText()
+            => UniTask.ToCoroutine(async () =>
+            {
+                await LoadTargetWithParameter();
+                target.SetParameter("parameter", new TranslationRoot
+                {
+                    Mode = TranslationRootMode.RawText,
+                    Value = "xyz"
+                });
+                target.RemoveParamater("parameter");
+               
+                CollectionAssert.AreEqual(new[] { "begin {parameter} end", "begin xyz end", "other begin {parameter} end" }, target.Applies);
+            });
+        
+        private async UniTask LoadTargetWithParameter()
+        {
+            manager.Load();
+            await manager.WaitForLoad();
+            target = CreateTarget("keyWithParameter");
+            target.gameObject.SetActive(true);
+            target.enabled = true;
+        }
+        
         private TestTranslationTarget CreateTarget(string initKey)
         {
             var go = new GameObject("target");
             go.SetActive(false);
             var target = go.AddComponent<TestTranslationTarget>();
-            target.Key = initKey;
+            target.Root = new TranslationRoot
+            {
+                Mode = TranslationRootMode.Translation, 
+                Value = initKey
+            };
             return target;
         }
     }

@@ -3,23 +3,23 @@ using UnityEngine;
 
 namespace Traduio
 {
-    public enum TranslationPointerMode
+    public enum TranslationRootMode
     {
         RawText,
         Translation
     }
     
     [Serializable]
-    public class TranslationPointer
+    public struct TranslationRoot
     {
-        [field: SerializeField] public TranslationPointerMode Mode { get; set; }
+        [field: SerializeField] public TranslationRootMode Mode { get; set; }
         [field: SerializeField] public string Value { get; set; }
     }
 
     [Serializable]
-    public class TranslationParameter
+    public struct TranslationParameter
     {
         [field: SerializeField] public string Key { get; set; }
-        [field: SerializeField] public TranslationPointer Value { get; set; }
+        [field: SerializeField] public TranslationRoot Value { get; set; }
     }
 }

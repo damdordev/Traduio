@@ -1,29 +1,79 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Traduio
 {
     public abstract class TranslationTarget : MonoBehaviour
     {
-        public string Key
+        public TranslationRoot Root
         {
-            get => key;
-            set => key = value;
+            get => root;
+            set
+            {
+                root = value;
+                Refresh();
+            }
         }
-        
-        [SerializeField] private string key;
         
         protected abstract void Apply(string text);
         protected abstract TranslationManagerPointer ManagerPointer { get; }
 
+        [SerializeField] private TranslationRoot root;
+        [SerializeField] private List<TranslationParameter> parameters;
+        
         private TranslationManager manager;
         private bool needRefresh;
         private string currentText;
+        private bool duringChanges;
 
+        public void StartChanges()
+        {
+            duringChanges = true;
+        }
+
+        public void CommitChanges()
+        {
+            duringChanges = false;
+            Refresh();
+        }
+
+        public void ClearParameters()
+        {
+            parameters.Clear();
+            Refresh();
+        }
+
+        public void SetParameter(string key, TranslationRoot value)
+        {
+            for (var i = 0; i < parameters.Count; i++)
+            {
+                if (key != parameters[i].Key) continue;
+                
+                parameters[i] = new TranslationParameter
+                {
+                    Key = key,
+                    Value = value
+                };
+                return;
+            }
+
+            parameters.Add(new TranslationParameter
+            {
+                Key = key,
+                Value = value
+            });
+        }
+
+        public void RemoveParamater(string key)
+        {
+            parameters.RemoveAll(x => x.Key == key);
+        }
+        
         protected virtual void Awake()
         {
             ManagerPointer.Changed += OnManagerChanged;
             manager = ManagerPointer.Manager;
-            if (manager != null) manager.Refresh += OnManagerRefresh;
+            if (manager != null) manager.Refresh += Refresh;
             Refresh();
         }
 
@@ -42,7 +92,7 @@ namespace Traduio
             ManagerPointer.Changed -= OnManagerChanged;
             if (manager != null)
             {
-                manager.Refresh -= OnManagerRefresh;
+                manager.Refresh -= Refresh;
                 manager = null;
             }
         }
@@ -51,28 +101,27 @@ namespace Traduio
         {
             if (manager != null)
             {
-                manager.Refresh -= OnManagerRefresh;
+                manager.Refresh -= Refresh;
                 manager = null;
             }
             manager = ManagerPointer.Manager;
             if (manager != null)
             {
-                manager.Refresh += OnManagerRefresh;
+                manager.Refresh += Refresh;
             }
-        }
-        
-        private void OnManagerRefresh()
-        {
-            if (isActiveAndEnabled) Refresh();
-            else needRefresh = true;
         }
 
         protected void Refresh()
         {
+            if (!isActiveAndEnabled || duringChanges)
+            {
+                needRefresh = true;
+                return;
+            }
             needRefresh = false;
             if (manager != null)
             {
-                var text = manager.GetTranslation(key);
+                var text = manager.Translate(root);
                 if (text == currentText) return;
                 currentText = text;
                 Apply(currentText);

@@ -85,10 +85,10 @@ namespace Traduio
             return false;
         }
 
-        public string Translate(TranslationPointer pointer, List<TranslationParameter> parameters)
+        public string Translate(TranslationRoot root, List<TranslationParameter> parameters = null)
         {
-            if (string.IsNullOrWhiteSpace(pointer.Value)) return "";
-            var value = EvaluateTextPointer(pointer);
+            if (string.IsNullOrWhiteSpace(root.Value)) return "";
+            var value = EvaluateTextPointer(root);
             if (parameters != null && parameters.Count > 0)
             {
                 foreach (var parameter in parameters)
@@ -102,14 +102,14 @@ namespace Traduio
 
         }
         
-        public string EvaluateTextPointer(TranslationPointer pointer)
+        public string EvaluateTextPointer(TranslationRoot root)
         {
-            if (string.IsNullOrWhiteSpace(pointer.Value)) return "";
-            return pointer.Mode switch
+            if (string.IsNullOrWhiteSpace(root.Value)) return "";
+            return root.Mode switch
             {
-                TranslationPointerMode.RawText => pointer.Value,
-                TranslationPointerMode.Translation => GetTranslation(pointer.Value),
-                _ => throw new ArgumentOutOfRangeException($"Incorrect pointer mode: {pointer.Mode}")
+                TranslationRootMode.RawText => root.Value,
+                TranslationRootMode.Translation => GetTranslation(root.Value),
+                _ => throw new ArgumentOutOfRangeException($"Incorrect pointer mode: {root.Mode}")
             };
         }
 
