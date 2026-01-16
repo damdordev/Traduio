@@ -8,6 +8,44 @@ using UnityEngine.Pool;
 
 namespace Traduio
 {
+    /// <summary>
+    /// Manages translation loading, retrieval, and processing for localization.
+    /// Supports multiple translation loaders with priority-based ordering and automatic retries.
+    /// All methods in TranslationManager need to be invoked from unity main thread.
+    /// </summary>
+    /// <remarks>
+    /// The TranslationManager handles:
+    /// - Multiple translation sources (loaders) with configurable priorities
+    /// - Asynchronous loading with timeout and retry support
+    /// - Translation key lookup with fallback behavior
+    /// - Custom error handling for missing translations and loader failures
+    /// - Translation text processing through custom processors
+    /// </remarks>
+    /// <example>
+    /// Basic usage:
+    /// <code>
+    /// var manager = new TranslationManager();
+    /// 
+    /// // Add a JSON file loader
+    /// var jsonLoader = ResourceTranslationLoader("translations");
+    /// manager.AddLoader(jsonLoader)
+    ///     .WithPriority(10)
+    ///     .WithRetries(3)
+    ///     .WithTimeout(TimeSpan.FromSeconds(5));
+    /// 
+    /// // Load translations asynchronously
+    /// manager.Load();
+    /// await manager.WaitForLoad();
+    /// 
+    /// // Get translations
+    /// string greeting = manager.GetTranslation("ui.greeting");
+    /// // Returns: "Hello, World!" (or "{missing:ui.greeting}" if not found)
+    /// 
+    /// // Clean up when done
+    /// manager.Dispose();
+    /// </code>
+    /// 
+    /// </example>
     public class TranslationManager : IDisposable
     {
         /// <summary>

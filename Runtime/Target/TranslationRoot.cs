@@ -14,6 +14,18 @@ namespace Traduio
     {
         [field: SerializeField] public TranslationRootMode Mode { get; set; }
         [field: SerializeField] public string Value { get; set; }
+
+        public static TranslationRoot Raw(string text) => new()
+        {
+            Mode = TranslationRootMode.RawText,
+            Value = text
+        };
+
+        public static TranslationRoot Translation(string id) => new()
+        {
+            Mode = TranslationRootMode.Translation,
+            Value = id
+        };
     }
 
     [Serializable]
