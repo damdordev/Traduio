@@ -28,6 +28,7 @@ namespace Traduio
 
             var data = new LoaderData { Loader = loader };
             loaders.Add(data);
+            SortLoaders();
             return data;
         }
 
@@ -138,6 +139,15 @@ namespace Traduio
         
         public void RefreshTargets() => Refresh.Invoke();
 
+        private void SortLoaders()
+        {
+            var tmpLoaders = ListPool<LoaderData>.Get();
+            tmpLoaders.AddRange(loaders.OrderBy(l => l.Priority));
+            loaders.Clear();
+            loaders.AddRange(tmpLoaders);
+            ListPool<LoaderData>.Release(tmpLoaders);
+        }
+        
         private async UniTask Load(LoaderData data)
         {
           while (!data.LoadFinished && !data.IsRemoved)
