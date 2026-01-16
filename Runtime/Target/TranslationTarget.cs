@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -309,6 +310,11 @@ namespace Traduio
         protected virtual void OnDisable()
         {
             
+        }
+
+        protected void OnValidate()
+        {
+            Refresh();
         }
 
         protected virtual void OnDestroy()
