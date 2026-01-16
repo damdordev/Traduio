@@ -217,5 +217,22 @@ namespace Traduio
                 Assert.AreEqual(1, target.Applies);
             });
         
+        [UnityTest]
+        public IEnumerator Test_MultiLevelChanging()
+            => UniTask.ToCoroutine(async () =>
+            {
+                target.gameObject.SetActive(true);
+                Assert.AreEqual(1, target.Applies);
+                
+                target.StartChanges();
+                target.StartChanges();
+                target.Refresh();
+                target.CommitChanges();
+                Assert.AreEqual(1, target.Applies);
+                target.CommitChanges();
+
+                Assert.AreEqual(2, target.Applies);
+            });
+        
     }
 }

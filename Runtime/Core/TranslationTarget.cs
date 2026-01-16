@@ -55,7 +55,7 @@ namespace Traduio
     /// </example>
     public abstract class TranslationTarget : MonoBehaviour
     {
-        private bool duringChanges;
+        private int changesLevel;
         private bool needRefresh;
         
         /// <summary>
@@ -73,6 +73,9 @@ namespace Traduio
         /// <para>
         /// Must be paired with CommitChanges() to apply the updates.
         /// </para>
+        /// <para>
+        /// StartChanges() and CommitChanges() can be nested. Each StartChange() needs a corresponding CommitChanged();
+        /// </para>
         /// </remarks>
         /// <example>
         /// <code>
@@ -87,11 +90,20 @@ namespace Traduio
         /// target.DoChange2();
         /// target.DoChange3();
         /// target.CommitChanges();
+        ///
+        /// // With nesting batching:
+        /// target.StartChanges();
+        /// target.StartChanges();
+        /// target.DoChange1();
+        /// target.DoChange2();
+        /// target.DoChange3();
+        /// target.CommitChanges();  // no refresh done here
+        /// target.CommitChanges();  // refresh done here
         /// </code>
         /// </example>
         public void StartChanges()
         {
-            duringChanges = true;
+            ++changesLevel;
         }
         
         /// <summary>
@@ -99,8 +111,8 @@ namespace Traduio
         /// </summary>
         public void CommitChanges()
         {
-            duringChanges = false;
-            if(needRefresh) Refresh();
+            --changesLevel;
+            if(changesLevel <= 0 && needRefresh) Refresh();
         }
         
         /// <summary>
@@ -189,7 +201,7 @@ namespace Traduio
         /// </summary>
         protected void Refresh()
         {
-            if (!isActiveAndEnabled || duringChanges)
+            if (!isActiveAndEnabled || changesLevel > 0)
             {
                 needRefresh = true;
                 return;
