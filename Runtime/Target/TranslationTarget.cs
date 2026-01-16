@@ -2,19 +2,73 @@ using UnityEngine;
 
 namespace Traduio
 {
+    /// <summary>
+    /// Abstract base class for Unity components update their content based on a <see cref="TranslationManager"/>.
+    /// Automatically updates content when translations change or when the translation manager refreshes.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// TranslationTarget connects UI components to the translation system, handling:
+    /// - Automatic updates when translations changes
+    /// - Lifecycle management and event subscription
+    /// - Deferred updates during batch operations
+    /// </para>
+    /// <para>
+    /// Derived classes must implement:
+    /// - Apply(): How to modify content
+    /// - ManagerPointer property: Reference to the translation manager
+    /// </para>
+    /// </remarks>
+    /// <example>
+    /// Creating a custom translation target for TextMeshPro:
+    /// <code>
+    /// using TMPro;
+    /// 
+    /// public class TMProTranslationTarget : TranslationTarget
+    /// {
+    ///     public static TranslationManagerPointer managerPointer = new();
+    ///
+    ///     [SerializeField] private TMP_Text textComponent;
+    ///     [SerializeField] private string id;
+    ///     
+    ///     protected override void Apply()
+    ///     {
+    ///         if (textComponent != null)
+    ///             textComponent.text = manager.GetTranslation(id);
+    ///     }
+    ///     
+    ///     protected override TranslationManagerPointer ManagerPointer => managerPointer;
+    /// }
+    /// </code>
+    /// 
+    /// 
+    /// Batch updates for better performance:
+    /// <code>
+    /// var target = GetComponent&lt;MyTranslationTarget&gt;();
+    /// 
+    /// target.StartChanges();  // Pause refresh
+    /// target.DoChange1();
+    /// target.DoChange2();
+    /// target.DoChange3();
+    /// target.CommitChanges(); // Single refresh for all changes
+    /// </code>
+    /// </example>
     public abstract class TranslationTarget : MonoBehaviour
     {
         private bool duringChanges;
         private bool needRefresh;
+        
+        /// <summary>
+        /// Gets the current <see cref="TranslationManager"/> instance assigned to this target.
+        /// </summary>
         protected TranslationManager manager { get; private set; }
         
-          /// <summary>
+        /// <summary>
         /// Begins a batch update operation, deferring text refresh until CommitChanges is called.
         /// </summary>
         /// <remarks>
         /// <para>
         /// Use this when making multiple parameter changes to avoid redundant refreshes.
-        /// Each call to SetParameter, ClearParameters, or setting Root normally triggers a refresh.
         /// </para>
         /// <para>
         /// Must be paired with CommitChanges() to apply the updates.
@@ -23,15 +77,15 @@ namespace Traduio
         /// <example>
         /// <code>
         /// // Without batching (3 refreshes):
-        /// target.SetParameter("name", TranslationRoot.Translation(nameValue));
-        /// target.SetParameter("score", TranslationRoot.Raw(scoreValue));
-        /// target.SetParameter("time", TranslationRoot.Raw(timeValue));
+        /// target.DoChange1();
+        /// target.DoChange2();
+        /// target.DoChange3();
         /// 
         /// // With batching (1 refresh):
         /// target.StartChanges();
-        /// target.SetParameter("name", TranslationRoot.Translation(nameValue));
-        /// target.SetParameter("score", TranslationRoot.Raw(scoreValue));
-        /// target.SetParameter("time", TranslationRoot.Raw(timeValue)l
+        /// target.DoChange1();
+        /// target.DoChange2();
+        /// target.DoChange3();
         /// target.CommitChanges();
         /// </code>
         /// </example>
@@ -39,22 +93,10 @@ namespace Traduio
         {
             duringChanges = true;
         }
-
+        
         /// <summary>
-        /// Completes a batch update operation and refreshes the displayed text.
+        /// Resumes the <see cref="Refresh"/> mechanism and triggers an immediate refresh of the content.
         /// </summary>
-        /// <remarks>
-        /// Must be called after StartChanges() to apply all deferred updates.
-        /// Triggers a single refresh regardless of how many changes were made.
-        /// </remarks>
-        /// <example>
-        /// <code>
-        /// target.SetParameter("player", TranslationRoot.Raw(playerName);
-        /// target.SetParameter("health", TranslationRoot.Raw(health.ToString());
-        /// target.Root = TranslationRoot.Translation("ui.status");
-        /// target.CommitChanges(); 
-        /// </code>
-        /// </example>
         public void CommitChanges()
         {
             duringChanges = false;
@@ -63,7 +105,7 @@ namespace Traduio
         
         /// <summary>
         /// Provides the reference to the translation manager.
-        /// Method has to be override in derived class.
+        /// Method has to be overriden in derived class.
         /// </summary>
         /// <value>
         /// A TranslationManagerPointer that references the active translation manager.
@@ -79,10 +121,19 @@ namespace Traduio
         ///     private static TranslationManagerPointer managerPointer = new();
         ///     
         ///     protected override TranslationManagerPointer ManagerPointer => managerPointer;
+        ///     protected override void Apply()
+        ///     {
+        ///         Debug.Log("modify content");
+        ///     }
         /// }
         /// </code>
         /// </example>
         protected abstract TranslationManagerPointer ManagerPointer { get; }
+        
+        /// <summary>
+        /// Implements the logic to update the content with the localized data from the <see cref="manager"/>.
+        /// Method has to be overriden in derived class.
+        /// </summary>
         protected abstract void Apply();
         
         protected virtual void Awake()
@@ -103,7 +154,7 @@ namespace Traduio
             
         }
 
-        protected void OnValidate()
+        protected virtual void OnValidate()
         {
             Refresh();
         }
@@ -132,6 +183,10 @@ namespace Traduio
             }
         }
 
+        /// <summary>
+        /// Evaluates whether the target should be updated. 
+        /// Updates are skipped if the object is inactive or if <see cref="StartChanges"/> has been called.
+        /// </summary>
         protected void Refresh()
         {
             if (!isActiveAndEnabled || duringChanges)

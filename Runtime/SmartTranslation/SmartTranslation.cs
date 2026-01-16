@@ -4,87 +4,45 @@ using UnityEngine;
 namespace Traduio
 {
     /// <summary>
-    /// Abstract base class for Unity components that display localized text.
-    /// Automatically updates displayed text when translations change or when the translation manager refreshes.
+    /// Abstract base class for translation targets that support parameterized translations.
+    /// Extends <see cref="TranslationTarget"/> to provide dynamic text replacement with translation keys.
     /// </summary>
     /// <remarks>
-    /// <para>
-    /// TranslationTarget connects UI components to the translation system, handling:
-    /// - Automatic updates when translations changes
-    /// - Parameter substitution in translations
-    /// - Lifecycle management and event subscription
-    /// - Deferred updates during batch operations
-    /// </para>
-    /// <para>
-    /// Derived classes must implement:
-    /// - Apply(string text): How to display the translated text
-    /// - ManagerPointer property: Reference to the translation manager
-    /// </para>
+    /// SmartTranslation enables localization with dynamic content by supporting parameters that can be
+    /// substituted into translation strings. Parameters are themselves translation keys, allowing for
+    /// fully localized dynamic content.
     /// </remarks>
     /// <example>
-    /// Creating a custom translation target for TextMeshPro:
     /// <code>
-    /// using TMPro;
-    /// 
-    /// public class TMProTranslationTarget : TranslationTarget
+    /// public class TextSmartTranslation : SmartTranslation
     /// {
-    ///     public static TranslationManagerPointer managerPointer = new();
-    ///
     ///     [SerializeField] private TMP_Text textComponent;
     ///     
     ///     protected override void Apply(string text)
     ///     {
-    ///         if (textComponent != null)
-    ///             textComponent.text = text;
+    ///         textComponent.text = text;
     ///     }
-    ///     
-    ///     protected override TranslationManagerPointer ManagerPointer => managerPointer;
     /// }
-    /// </code>
     /// 
-    /// Using in Unity Inspector:
-    /// <code>
-    /// // Set Root to translation key "ui.welcome"
-    /// // At runtime, the component will display the translated text
-    /// 
-    /// // Dynamic parameter updates:
-    /// var target = GetComponent&lt;TMProTranslationTarget&gt;();
-    /// target.SetParameter("playerName", TranslationRoot.Raw("Alice")); 
-    /// // If translation is "Welcome, {playerName}!" 
-    /// // Display will show: "Welcome, Alice!"
-    /// </code>
-    /// 
-    /// Batch updates for better performance:
-    /// <code>
-    /// var target = GetComponent&lt;TranslationTarget&gt;();
-    /// 
-    /// target.StartChanges();  // Pause refresh
-    /// target.SetParameter("score", TranslationRoot.Raw("100"));
-    /// target.SetParameter("level", TranslationRoot.Raw("5"); });
-    /// target.SetParameter("rank", TranslationRoot.Raw("Gold"); });
-    /// target.CommitChanges(); // Single refresh for all changes
+    /// // Usage in a MonoBehaviour
+    /// var translation = GetComponent&lt;TextSmartTranslation&gt;();
+    /// translation.Key = SmartTranslationKey.Translation("welcome_message");
+    /// translation.SetParameter("username", SmartTranslationKey.Raw(player_name));
+    /// // If "welcome_message" = "Hello, {username}!" and "player_name" = "John"
+    /// // Result: "Hello, John!"
     /// </code>
     /// </example>
     public abstract class SmartTranslation : TranslationTarget
     {
         /// <summary>
-        /// Gets or sets the translation root that defines what text to display.
-        /// Setting this property triggers refresh of the displayed text/
+        /// Gets or sets the translation key used to retrieve the localized text.
         /// </summary>
         /// <remarks>
-        /// Triggers an immediate refresh unless called during a batch update (StartChanges).
+        /// Setting this property automatically triggers a refresh of the displayed text.
         /// </remarks>
-        /// <value>
-        /// A TranslationRoot containing either a translation key or raw text,
-        /// depending on its Mode property.
-        /// </value>
         /// <example>
         /// <code>
-        /// // Set to display a translation key
-        /// target.Root = TranslationRoot.Translation(ui.title);
-        /// 
-        /// // Set to display raw text (not translated)
-        /// target.Root = TranslationRoot.Raw("Hello world");
+        /// translation.Key = SmartTranslationKey.Translation("ui.button.confirm");
         /// </code>
         /// </example>
         public SmartTranslationKey Key
@@ -101,24 +59,19 @@ namespace Traduio
         [SerializeField] private List<SmartTranslationParameter> parameters = new();
         
         private string currentText;
-
+        
         /// <summary>
-        /// Removes all parameters and refreshes the displayed text.
+        /// Removes all translation parameters and refreshes the displayed text.
         /// </summary>
         /// <remarks>
-        /// This will cause any {placeholder} tokens in the translation to remain unreplaced.
-        /// Triggers an immediate refresh unless called during a batch update (StartChanges).
+        /// This method clears all dynamic parameters, reverting the translation to its base form
+        /// without any substitutions.
         /// </remarks>
         /// <example>
         /// <code>
-        /// // Setup with parameters
-        /// target.SetParameter("name", TranslationRoot.Raw("Alice"));
-        /// target.SetParameter("score", TranslationRoot.Raw("100");
-        /// // Translation "Hello {name}, score: {score}" is "Hello Alice, score: 100"
-        /// 
-        /// // Clear all parameters
-        /// target.ClearParameters();
-        /// // Translation "Hello {name}, score: {score}" becomes "Hello {name}, score: {score}"
+        /// translation.SetParameter("score", SmartTranslationKey.Raw("current_score"));
+        /// translation.SetParameter("level", SmartTranslationKey.Raw("current_level"));
+        /// translation.ClearParameters(); // Removes both parameters
         /// </code>
         /// </example>
         public void ClearParameters()
@@ -126,33 +79,24 @@ namespace Traduio
             parameters.Clear();
             Refresh();
         }
-
+        
         /// <summary>
-        /// Sets or updates a translation parameter for placeholder replacement.
+        /// Sets or updates a translation parameter with the specified key and value.
         /// </summary>
-        /// <param name="key">
-        /// The parameter key that matches the placeholder in the translation (without braces).
-        /// For example, use "name" to replace {name} in the translation.
-        /// </param>
-        /// <param name="value">
-        /// The TranslationRoot containing the replacement value.
-        /// Can be either raw text or another translation key.
-        /// </param>
+        /// <param name="key">The parameter identifier to set or update.</param>
+        /// <param name="value">The translation key to use as the parameter value.</param>
         /// <remarks>
-        /// <para>
-        /// If a parameter with the same key exists, it will be replaced.
-        /// Otherwise, a new parameter is added.
-        /// </para>
-        /// <para>
-        /// Triggers an immediate refresh unless called during a batch update (StartChanges).
-        /// </para>
+        /// If a parameter with the given key already exists, it will be updated.
+        /// Otherwise, a new parameter will be added. The text is automatically refreshed
+        /// after the parameter is set.
         /// </remarks>
         /// <example>
-        /// Basic parameter setting:
         /// <code>
-        /// // Translation: "Welcome, {username}!"
-        /// target.SetParameter("username", "Alice");
-        /// // Result: "Welcome, Alice!"
+        /// // Translation string: "You have {itemCount} items in your inventory"
+        /// translation.SetParameter("itemCount", SmartTranslationKey.Translation("items.count.5"));
+        /// 
+        /// // Update the same parameter
+        /// translation.SetParameter("itemCount", SmartTranslationKey.Translation("items.count.10");
         /// </code>
         /// </example>
         public void SetParameter(string key, SmartTranslationKey value)
@@ -177,24 +121,19 @@ namespace Traduio
             });
             Refresh();
         }
-
+        
         /// <summary>
-        /// Removes a translation parameter by key.
+        /// Removes all parameters matching the specified key and refreshes the displayed text.
         /// </summary>
-        /// <param name="key">The key of the parameter to remove.</param>
+        /// <param name="key">The parameter identifier to remove.</param>
         /// <remarks>
-        /// Triggers an immediate refresh unless called during a batch update (StartChanges).
+        /// If no parameter with the given key exists, this method has no effect.
+        /// The text is automatically refreshed after removal.
         /// </remarks>
         /// <example>
         /// <code>
-        /// target.SetParameter("tempValue", TranslationRoot.Raw(someValue));
-        /// target.RemoveParameter("tempValue");
-        /// 
-        /// // Or use batch updates:
-        /// target.StartChanges();
-        /// target.RemoveParameter("param1");
-        /// target.RemoveParameter("param2");
-        /// target.CommitChanges(); // Single refresh
+        /// translation.SetParameter("playerName", SmartTranslationKey.Translation("name.player1"));
+        /// translation.RemoveParameter("playerName");
         /// </code>
         /// </example>
         public void RemoveParameter(string key)
@@ -204,14 +143,26 @@ namespace Traduio
         }
         
         /// <summary>
-        /// Applies the translated text to the target component. Method has to be override in
-        /// derived class.
+        /// When implemented in a derived class, applies the translated text to the target component.
         /// </summary>
-        /// <param name="text">The fully translated and processed text to display.</param>
+        /// <param name="text">The fully translated and parameterized text to apply.</param>
         /// <remarks>
-        /// This method is called whenever the translation needs to be updated.
-        /// Implementations should update their UI component with the provided text.
+        /// This method must be implemented by derived classes to define how the translated text
+        /// is displayed (e.g., setting it to a TextMeshPro component, UI Text, etc.).
         /// </remarks>
+        /// <example>
+        /// <code>
+        /// public class TextSmartTranslation : SmartTranslation
+        /// {
+        ///     [SerializeField] private TMP_Text textComponent;
+        ///     
+        ///     protected override void Apply(string text)
+        ///     {
+        ///         textComponent.text = text;
+        ///     }
+        /// }
+        /// </code>
+        /// </example>
         protected abstract void Apply(string text);
 
         protected sealed override void Apply()
