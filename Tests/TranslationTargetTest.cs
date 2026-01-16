@@ -386,7 +386,7 @@ namespace Traduio
                 });
                 target.ClearParameters();
                
-                CollectionAssert.AreEqual(new[] { "begin {parameter} end", "begin xyz end", "other begin {parameter} end" }, target.Applies);
+                CollectionAssert.AreEqual(new[] { "begin {parameter} end", "begin xyz end", "begin {parameter} end" }, target.Applies);
             });
         
         [UnityTest]
@@ -399,9 +399,9 @@ namespace Traduio
                     Mode = TranslationRootMode.RawText,
                     Value = "xyz"
                 });
-                target.RemoveParamater("parameter");
+                target.RemoveParameter("parameter");
                
-                CollectionAssert.AreEqual(new[] { "begin {parameter} end", "begin xyz end", "other begin {parameter} end" }, target.Applies);
+                CollectionAssert.AreEqual(new[] { "begin {parameter} end", "begin xyz end", "begin {parameter} end" }, target.Applies);
             });
         
         private async UniTask LoadTargetWithParameter()

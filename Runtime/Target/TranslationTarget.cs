@@ -19,7 +19,7 @@ namespace Traduio
         protected abstract TranslationManagerPointer ManagerPointer { get; }
 
         [SerializeField] private TranslationRoot root;
-        [SerializeField] private List<TranslationParameter> parameters;
+        [SerializeField] private List<TranslationParameter> parameters = new();
         
         private TranslationManager manager;
         private bool needRefresh;
@@ -54,6 +54,7 @@ namespace Traduio
                     Key = key,
                     Value = value
                 };
+                Refresh();
                 return;
             }
 
@@ -62,11 +63,13 @@ namespace Traduio
                 Key = key,
                 Value = value
             });
+            Refresh();
         }
 
-        public void RemoveParamater(string key)
+        public void RemoveParameter(string key)
         {
             parameters.RemoveAll(x => x.Key == key);
+            Refresh();
         }
         
         protected virtual void Awake()
@@ -121,7 +124,7 @@ namespace Traduio
             needRefresh = false;
             if (manager != null)
             {
-                var text = manager.Translate(root);
+                var text = manager.Translate(root, parameters);
                 if (text == currentText) return;
                 currentText = text;
                 Apply(currentText);
