@@ -9,7 +9,7 @@ using Object = UnityEngine.Object;
 
 namespace Traduio
 {
-    public class TranslationTargetTest
+    public class SmartTranslationTest
     {
         private readonly Dictionary<string, string> TestTranslations = new()
         {
@@ -28,7 +28,7 @@ namespace Traduio
         private TestTranslationLoader loader1;
         private TestTranslationLoader loader2;
         private TranslationManager manager;
-        private TestTranslationTarget target;
+        private TestSmartTranslation target;
         
         [SetUp]
         public void Setup()
@@ -37,7 +37,7 @@ namespace Traduio
             loader1 = new TestTranslationLoader(TestTranslations, 0f);
             loader2 = new TestTranslationLoader(TestTranslations2, 0f);
             manager.AddLoader(loader1);
-            TestTranslationTarget.Pointer.Setup(manager);
+            TestSmartTranslation.Pointer.Setup(manager);
         }
 
         [TearDown]
@@ -181,7 +181,7 @@ namespace Traduio
 
                 var otherManager = new TranslationManager();
                 otherManager.AddLoader(loader2);
-                TestTranslationTarget.Pointer.Setup(otherManager);
+                TestSmartTranslation.Pointer.Setup(otherManager);
                 otherManager.Load();
                 await otherManager.WaitForLoad();
                 otherManager.RefreshTargets();
@@ -200,7 +200,7 @@ namespace Traduio
 
                 var otherManager = new TranslationManager();
                 otherManager.AddLoader(loader2);
-                TestTranslationTarget.Pointer.Setup(otherManager);
+                TestSmartTranslation.Pointer.Setup(otherManager);
                 otherManager.Load();
                 await otherManager.WaitForLoad();
                
@@ -218,7 +218,7 @@ namespace Traduio
                 
                 var otherManager = new TranslationManager();
                 otherManager.AddLoader(loader1);
-                TestTranslationTarget.Pointer.Setup(otherManager);
+                TestSmartTranslation.Pointer.Setup(otherManager);
                 otherManager.Load();
                 await otherManager.WaitForLoad();
                 otherManager.RefreshTargets();
@@ -238,7 +238,7 @@ namespace Traduio
         
                 var otherManager = new TranslationManager();
                 otherManager.AddLoader(loader1);
-                TestTranslationTarget.Pointer.Setup(otherManager);
+                TestSmartTranslation.Pointer.Setup(otherManager);
                 otherManager.Load();
                 await otherManager.WaitForLoad();
                 otherManager.RefreshTargets();
@@ -258,7 +258,7 @@ namespace Traduio
         
                 var otherManager = new TranslationManager();
                 otherManager.AddLoader(loader2);
-                TestTranslationTarget.Pointer.Setup(otherManager);
+                TestSmartTranslation.Pointer.Setup(otherManager);
                 otherManager.Load();
                 await otherManager.WaitForLoad();
                 otherManager.RefreshTargets();
@@ -272,9 +272,9 @@ namespace Traduio
             => UniTask.ToCoroutine(async () =>
             {
                 await LoadTargetWithParameter();
-                target.Root = new TranslationRoot
+                target.Key = new SmartTranslationKey
                 {
-                    Mode = TranslationRootMode.Translation,
+                    Mode = SmartTranslationKeyMode.Translation,
                     Value = "otherKeyWithParameter"
                 };
                
@@ -287,9 +287,9 @@ namespace Traduio
             {
                 await LoadTargetWithParameter();
                 target.enabled = false;
-                target.Root = new TranslationRoot
+                target.Key = new SmartTranslationKey
                 {
-                    Mode = TranslationRootMode.Translation,
+                    Mode = SmartTranslationKeyMode.Translation,
                     Value = "otherKeyWithParameter"
                 };
                
@@ -304,9 +304,9 @@ namespace Traduio
             {
                 await LoadTargetWithParameter();
                 target.StartChanges();
-                target.Root = new TranslationRoot
+                target.Key = new SmartTranslationKey
                 {
-                    Mode = TranslationRootMode.Translation,
+                    Mode = SmartTranslationKeyMode.Translation,
                     Value = "otherKeyWithParameter"
                 };
                
@@ -322,9 +322,9 @@ namespace Traduio
                 await LoadTargetWithParameter();
                 target.enabled = false;
                 target.StartChanges();
-                target.Root = new TranslationRoot
+                target.Key = new SmartTranslationKey
                 {
-                    Mode = TranslationRootMode.Translation,
+                    Mode = SmartTranslationKeyMode.Translation,
                     Value = "otherKeyWithParameter"
                 };
                
@@ -342,9 +342,9 @@ namespace Traduio
                 await LoadTargetWithParameter();
                 target.enabled = false;
                 target.StartChanges();
-                target.Root = new TranslationRoot
+                target.Key = new SmartTranslationKey
                 {
-                    Mode = TranslationRootMode.Translation,
+                    Mode = SmartTranslationKeyMode.Translation,
                     Value = "otherKeyWithParameter"
                 };
                
@@ -360,14 +360,14 @@ namespace Traduio
             => UniTask.ToCoroutine(async () =>
             {
                 await LoadTargetWithParameter();
-                target.SetParameter("parameter", new TranslationRoot
+                target.SetParameter("parameter", new SmartTranslationKey
                 {
-                    Mode = TranslationRootMode.RawText,
+                    Mode = SmartTranslationKeyMode.RawText,
                     Value = "xyz"
                 });
-                target.SetParameter("parameter", new TranslationRoot
+                target.SetParameter("parameter", new SmartTranslationKey
                 {
-                    Mode = TranslationRootMode.RawText,
+                    Mode = SmartTranslationKeyMode.RawText,
                     Value = "abc"
                 });
                
@@ -379,9 +379,9 @@ namespace Traduio
             => UniTask.ToCoroutine(async () =>
             {
                 await LoadTargetWithParameter();
-                target.SetParameter("parameter", new TranslationRoot
+                target.SetParameter("parameter", new SmartTranslationKey
                 {
-                    Mode = TranslationRootMode.RawText,
+                    Mode = SmartTranslationKeyMode.RawText,
                     Value = "xyz"
                 });
                 target.ClearParameters();
@@ -394,9 +394,9 @@ namespace Traduio
             => UniTask.ToCoroutine(async () =>
             {
                 await LoadTargetWithParameter();
-                target.SetParameter("parameter", new TranslationRoot
+                target.SetParameter("parameter", new SmartTranslationKey
                 {
-                    Mode = TranslationRootMode.RawText,
+                    Mode = SmartTranslationKeyMode.RawText,
                     Value = "xyz"
                 });
                 target.RemoveParameter("parameter");
@@ -413,14 +413,14 @@ namespace Traduio
             target.enabled = true;
         }
         
-        private TestTranslationTarget CreateTarget(string initKey)
+        private TestSmartTranslation CreateTarget(string initKey)
         {
             var go = new GameObject("target");
             go.SetActive(false);
-            var target = go.AddComponent<TestTranslationTarget>();
-            target.Root = new TranslationRoot
+            var target = go.AddComponent<TestSmartTranslation>();
+            target.Key = new SmartTranslationKey
             {
-                Mode = TranslationRootMode.Translation, 
+                Mode = SmartTranslationKeyMode.Translation, 
                 Value = initKey
             };
             return target;

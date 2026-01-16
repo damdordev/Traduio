@@ -213,7 +213,7 @@ namespace Traduio
         /// <summary>
         /// Translates a TranslationRoot with optional parameter substitution.
         /// </summary>
-        /// <param name="root">The root translation object containing the text or translation key.</param>
+        /// <param name="key">The root translation object containing the text or translation key.</param>
         /// <param name="parameters">Optional list of parameters for placeholder replacement in format {key}.</param>
         /// <returns>
         /// The evaluated and processed translation string with all parameters substituted.
@@ -289,10 +289,10 @@ namespace Traduio
         /// // Returns: "Hello, Administrator!"
         /// </code>
         /// </example>
-        public string Translate(TranslationRoot root, List<TranslationParameter> parameters = null)
+        public string Translate(SmartTranslationKey key, List<SmartTranslationParameter> parameters = null)
         {
-            if (string.IsNullOrWhiteSpace(root.Value)) return "";
-            var value = Evaluate(root);
+            if (string.IsNullOrWhiteSpace(key.Value)) return "";
+            var value = Evaluate(key);
             if (parameters != null && parameters.Count > 0)
             {
                 foreach (var parameter in parameters)
@@ -429,14 +429,14 @@ namespace Traduio
         /// </remarks>
         public void RefreshTargets() => Refresh.Invoke();
 
-        private string Evaluate(TranslationRoot root)
+        private string Evaluate(SmartTranslationKey key)
         {
-            if (string.IsNullOrWhiteSpace(root.Value)) return "";
-            return root.Mode switch
+            if (string.IsNullOrWhiteSpace(key.Value)) return "";
+            return key.Mode switch
             {
-                TranslationRootMode.RawText => root.Value,
-                TranslationRootMode.Translation => GetTranslation(root.Value),
-                _ => throw new ArgumentOutOfRangeException($"Incorrect pointer mode: {root.Mode}")
+                SmartTranslationKeyMode.RawText => key.Value,
+                SmartTranslationKeyMode.Translation => GetTranslation(key.Value),
+                _ => throw new ArgumentOutOfRangeException($"Incorrect pointer mode: {key.Mode}")
             };
         }
         
