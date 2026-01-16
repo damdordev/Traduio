@@ -299,8 +299,14 @@ namespace Traduio
                 if(loaderData.CancellationTokenSource != null) currentLoaders.Add(loaderData);
             }
 
-            await UniTask.WaitUntil(() => IsLoadFinished(currentLoaders), cancellationToken: cancellationToken);
-            ListPool<LoaderData>.Release(currentLoaders);
+            try
+            {
+                await UniTask.WaitUntil(() => IsLoadFinished(currentLoaders), cancellationToken: cancellationToken);
+            }
+            finally
+            {
+                ListPool<LoaderData>.Release(currentLoaders);
+            }
         }
 
         /// <summary>
@@ -437,6 +443,7 @@ namespace Traduio
 
             data.CancellationTokenSource?.Dispose();
             data.CancellationTokenSource = null;
+            await UniTask.SwitchToMainThread();
         }
 
         private static bool IsLoadFinished(List<LoaderData> loaders)
