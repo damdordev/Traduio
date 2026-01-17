@@ -34,8 +34,12 @@ namespace Traduio
         /// This key should match the placeholder name in the translation string, typically enclosed in curly braces.
         /// For example, if the translation is "Score: {playerScore}", the key should be "playerScore".
         /// </remarks>
-        [field: SerializeField] public string Key { get; set; }
-        
+        public string Key
+        {
+            get => key;
+            set => key = value;
+        }
+
         /// <summary>
         /// Gets or sets the translation key that provides the value for this parameter.
         /// </summary>
@@ -46,6 +50,13 @@ namespace Traduio
         /// The value can be either a raw text string or another translation key, enabling fully localized
         /// dynamic content where even parameter values are translated based on the current language.
         /// </remarks>
-        [field: SerializeField] public SmartTranslationKey Value { get; set; }
+        public SmartTranslationKey Value
+        {
+            get => value;
+            set => this.value = value;
+        }
+
+        [SerializeField] private string key;
+        [SerializeField] private SmartTranslationKey value;
     }
 }

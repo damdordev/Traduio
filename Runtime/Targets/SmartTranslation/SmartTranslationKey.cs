@@ -36,16 +36,27 @@ namespace Traduio
         /// <value>
         /// A <see cref="SmartTranslationKeyMode"/> indicating whether the value is raw text or a translation identifier.
         /// </value>
-        [field: SerializeField] public SmartTranslationKeyMode Mode { get; set; }
-        
+        public SmartTranslationKeyMode Mode
+        {
+            get => mode;
+            set => mode = value;
+        }
+
         /// <summary>
         /// Gets or sets the string value, interpreted according to the <see cref="Mode"/>.
         /// </summary>
         /// <value>
         /// Either a literal text string (if Mode is RawText) or a translation key identifier (if Mode is Translation).
         /// </value>
-        [field: SerializeField] public string Value { get; set; }
+        public string Value
+        {
+            get => value;
+            set => this.value = value;
+        }
 
+        [SerializeField] private SmartTranslationKeyMode mode;
+        [SerializeField] private string value;
+        
         /// <summary>
         /// Creates a <see cref="SmartTranslationKey"/> configured for raw text display.
         /// </summary>
