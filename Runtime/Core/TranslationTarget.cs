@@ -114,10 +114,10 @@ namespace Traduio
             --changesLevel;
             if(changesLevel <= 0 && needRefresh) Refresh();
         }
-        
+
         /// <summary>
         /// Provides the reference to the translation manager.
-        /// Method has to be overriden in derived class.
+        /// Default value is <see cref="TraduioMainManager.Pointer"/>
         /// </summary>
         /// <value>
         /// A TranslationManagerPointer that references the active translation manager.
@@ -140,7 +140,7 @@ namespace Traduio
         /// }
         /// </code>
         /// </example>
-        protected abstract TranslationManagerPointer ManagerPointer { get; }
+        protected virtual TranslationManagerPointer ManagerPointer => TraduioMainManager.Pointer;
         
         /// <summary>
         /// Implements the logic to update the content with the localized data from the <see cref="manager"/>.

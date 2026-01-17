@@ -32,7 +32,7 @@ namespace Traduio
     /// // Result: "Hello, John!"
     /// </code>
     /// </example>
-    public abstract class SmartTranslation : TranslationTarget
+    public abstract class BaseSmartTranslation : TranslationTarget
     {
         /// <summary>
         /// Gets or sets the translation key used to retrieve the localized text.

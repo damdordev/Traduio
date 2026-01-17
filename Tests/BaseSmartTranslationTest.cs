@@ -8,7 +8,7 @@ using Object = UnityEngine.Object;
 
 namespace Traduio
 {
-    public class SmartTranslationTest
+    public class BaseSmartTranslationTest
     {
         private readonly Dictionary<string, string> TestTranslations = new()
         {
@@ -27,7 +27,7 @@ namespace Traduio
         private TestTranslationLoader loader1;
         private TestTranslationLoader loader2;
         private TranslationManager manager;
-        private TestSmartTranslation target;
+        private TestBaseSmartTranslation target;
         
         [SetUp]
         public void Setup()
@@ -36,7 +36,7 @@ namespace Traduio
             loader1 = new TestTranslationLoader(TestTranslations, 0f);
             loader2 = new TestTranslationLoader(TestTranslations2, 0f);
             manager.AddLoader(loader1);
-            TestSmartTranslation.Pointer.Setup(manager);
+            TestBaseSmartTranslation.Pointer.Setup(manager);
         }
 
         [TearDown]
@@ -141,11 +141,11 @@ namespace Traduio
             target.enabled = true;
         }
         
-        private TestSmartTranslation CreateTarget(string initKey)
+        private TestBaseSmartTranslation CreateTarget(string initKey)
         {
             var go = new GameObject("target");
             go.SetActive(false);
-            var target = go.AddComponent<TestSmartTranslation>();
+            var target = go.AddComponent<TestBaseSmartTranslation>();
             target.Key = new SmartTranslationKey
             {
                 Mode = SmartTranslationKeyMode.Translation, 

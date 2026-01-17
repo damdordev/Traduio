@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Traduio
 {
-    public class TestSmartTranslation : SmartTranslation
+    public class TestBaseSmartTranslation : BaseSmartTranslation
     {
         public static TranslationManagerPointer Pointer = new();
         
