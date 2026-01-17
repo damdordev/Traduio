@@ -1,3 +1,5 @@
+#if TRADUIO_UGUI
+
 using UnityEngine.UI;
 
 namespace Traduio
@@ -14,3 +16,5 @@ namespace Traduio
         }
     }
 }
+
+#endif

@@ -17,6 +17,11 @@
             "name": "com.unity.textmeshpro",
             "expression": "",
             "define": "TRADUIO_TEXT_MESH_PRO"
+        },
+        {
+            "name": "com.unity.ugui",
+            "expression": "",
+            "define": "TRADUIO_UGUI"
         }
     ],
     "noEngineReferences": false
