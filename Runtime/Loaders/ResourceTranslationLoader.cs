@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -21,7 +22,11 @@ namespace Traduio
             var asset = Resources.Load<TextAsset>(path);
             var text = asset.text;
             Resources.UnloadAsset(asset);
-            var result = JsonUtility.FromJson<Dictionary<string, string>>(text);
+            var result = (Json.Deserialize(text) as Dictionary<string, object>)!.ToDictionary(
+                k => k.Key,
+                kvp => kvp.Value.ToString()
+            );
+
             return UniTask.FromResult<ITranslationLibrary>(new DictionaryTranslationLibrary(result));
         }
     }
