@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Traduio.Editor
+namespace Damdor.Traduio.Editor
 {
     [CustomPropertyDrawer(typeof(SmartTranslationParameter))]
     public class SmartTranslationParameterPropertyDrawer : PropertyDrawer

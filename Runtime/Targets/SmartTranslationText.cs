@@ -2,7 +2,7 @@
 
 using UnityEngine.UI;
 
-namespace Traduio
+namespace Damdor.Traduio
 {
     public class SmartTranslationText : BaseSmartTranslation
     {

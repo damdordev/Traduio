@@ -34,7 +34,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Traduio
+namespace Damdor.Traduio
 {
 	// Example usage:
 	//

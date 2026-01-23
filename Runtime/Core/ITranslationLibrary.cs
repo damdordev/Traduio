@@ -1,4 +1,4 @@
-namespace Traduio
+namespace Damdor.Traduio
 {
     public interface ITranslationLibrary
     {

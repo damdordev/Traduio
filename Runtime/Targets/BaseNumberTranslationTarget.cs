@@ -2,7 +2,7 @@ using System.Globalization;
 using Damdor.Fundation;
 using UnityEngine;
 
-namespace Traduio
+namespace Damdor.Traduio
 {
     public class BaseNumberTranslationTarget : TranslationTarget, ISetupable<float>
     {

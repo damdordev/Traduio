@@ -6,7 +6,7 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Pool;
 
-namespace Traduio
+namespace Damdor.Traduio
 {
     /// <summary>
     /// Manages translation loading, retrieval, and processing for localization.

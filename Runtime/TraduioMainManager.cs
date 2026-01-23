@@ -1,4 +1,4 @@
-namespace Traduio
+namespace Damdor.Traduio
 {
     public static class TraduioMainManager
     {

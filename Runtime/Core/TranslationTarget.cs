@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Traduio
+namespace Damdor.Traduio
 {
     /// <summary>
     /// Abstract base class for Unity components update their content based on a <see cref="TranslationManager"/>.

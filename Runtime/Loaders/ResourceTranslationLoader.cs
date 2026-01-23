@@ -4,7 +4,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-namespace Traduio
+namespace Damdor.Traduio
 {
     public class ResourceTranslationLoader : ITranslationLoader
     {

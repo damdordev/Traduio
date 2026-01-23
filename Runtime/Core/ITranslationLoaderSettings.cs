@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 
-namespace Traduio
+namespace Damdor.Traduio
 {
     public interface ITranslationLoaderSettings
     {

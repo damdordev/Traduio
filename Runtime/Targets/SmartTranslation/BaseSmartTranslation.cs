@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Traduio
+namespace Damdor.Traduio
 {
     /// <summary>
     /// Abstract base class for translation targets that support parameterized translations.

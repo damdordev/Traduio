@@ -1,7 +1,7 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 
-namespace Traduio
+namespace Damdor.Traduio
 {
     public interface ITranslationLoader
     {

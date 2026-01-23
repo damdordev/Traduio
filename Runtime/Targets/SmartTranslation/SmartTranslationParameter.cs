@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Traduio
+namespace Damdor.Traduio
 {
     /// <summary>
     /// Represents a named parameter for use in parameterized translations.

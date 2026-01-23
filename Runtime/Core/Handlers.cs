@@ -1,6 +1,6 @@
 using System;
 
-namespace Traduio
+namespace Damdor.Traduio
 {
     public delegate void LoaderErrorHandler(ITranslationLoader loader, Exception exception);
     public delegate void MissingTranslationErrorHandler(string id);

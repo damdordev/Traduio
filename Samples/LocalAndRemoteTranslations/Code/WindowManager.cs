@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Traduio.Samples
+namespace Damdor.Traduio.Samples
 {
     public class WindowManager
     {

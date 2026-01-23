@@ -2,7 +2,7 @@ using System;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-namespace Traduio.Samples
+namespace Damdor.Traduio.Samples
 {
     public class Game : MonoBehaviour
     {

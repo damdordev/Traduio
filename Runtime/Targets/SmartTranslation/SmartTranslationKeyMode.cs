@@ -1,4 +1,4 @@
-namespace Traduio
+namespace Damdor.Traduio
 {
     /// <summary>
     /// Defines how a <see cref="SmartTranslationKey"/> should interpret its value.

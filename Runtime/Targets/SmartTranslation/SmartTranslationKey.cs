@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Traduio
+namespace Damdor.Traduio
 {
     /// <summary>
     /// Represents a translation key that can be either a raw text string or a translation identifier.

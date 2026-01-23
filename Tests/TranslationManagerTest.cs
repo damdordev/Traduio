@@ -8,7 +8,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace Traduio
+namespace Damdor.Traduio.Tests
 {
     public class TranslationManagerTest
     {

@@ -2,7 +2,7 @@ using TMPro;
 
 #if TRADUIO_TEXT_MESH_PRO
 
-namespace Traduio
+namespace Damdor.Traduio
 {
     public class SmartTranslationTMP : BaseSmartTranslation
     {

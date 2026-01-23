@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-namespace Traduio.Samples
+namespace Damdor.Traduio.Samples
 {
     public class Sample_GettingTranslationFromCode : MonoBehaviour
     {

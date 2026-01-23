@@ -1,6 +1,6 @@
 using System;
 
-namespace Traduio
+namespace Damdor.Traduio
 {
     public class TranslationManagerPointer
     {

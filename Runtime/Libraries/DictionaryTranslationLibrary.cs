@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Traduio
+namespace Damdor.Traduio
 {
     public class DictionaryTranslationLibrary : ITranslationLibrary
     {

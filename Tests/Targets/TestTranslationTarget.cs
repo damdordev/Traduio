@@ -1,4 +1,4 @@
-namespace Traduio
+namespace Damdor.Traduio.Tests
 {
     public class TestTranslationTarget : TranslationTarget
     {

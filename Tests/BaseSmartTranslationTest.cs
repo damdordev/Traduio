@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.TestTools;
 using Object = UnityEngine.Object;
 
-namespace Traduio
+namespace Damdor.Traduio.Tests
 {
     public class BaseSmartTranslationTest
     {

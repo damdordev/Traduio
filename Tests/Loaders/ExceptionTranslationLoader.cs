@@ -1,9 +1,8 @@
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 
-namespace Traduio
+namespace Damdor.Traduio.Tests
 {
     public class ExceptionTranslationLoader : ITranslationLoader
     {
