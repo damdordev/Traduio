@@ -2,29 +2,25 @@ using System;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-namespace Damdor.Traduio.Samples
+namespace Damdor.Traduio.Samples.LocalAndRemoteTranslations
 {
     public class Game : MonoBehaviour
     {
-        public GameObject loadingScreen;
-        public GameObject mainScreen;
-        
-        private WindowManager windowManager;
+        public BaseSmartTranslation text;
         
         public async UniTaskVoid Start()
         {
-            windowManager = new WindowManager();
+            text.Key = SmartTranslationKey.Translation("loading");
             await LoadLocalTranslations();
-            windowManager.ChangeWindow(loadingScreen);
             await LoadRemoteTranslations();
-            windowManager.ChangeWindow(mainScreen);
+            text.Key = SmartTranslationKey.Translation("loaded");
             OnFullyLoaded();
         }
 
         private async UniTask LoadLocalTranslations()
         {
             var manager = new TranslationManager();
-            manager.AddLoader(new ResourceTranslationLoader("local_translations"));
+            manager.AddLoader(new ResourceTranslationLoader("Samples/LocalAndRemoteTranslations/local_translations"));
             manager.Load();
             await manager.WaitForLoad();
             TraduioMainManager.Pointer.Setup(manager);
@@ -36,7 +32,7 @@ namespace Damdor.Traduio.Samples
             var manager = new TranslationManager();
             manager.AddLoader(new DelayedTranslationLoader(
                 TimeSpan.FromSeconds(10),
-                new ResourceTranslationLoader("remote_translations"))
+                new ResourceTranslationLoader("Samples/LocalAndRemoteTranslations/remote_translations"))
             );
             manager.Load();
             await manager.WaitForLoad();

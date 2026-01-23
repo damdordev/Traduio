@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 
-namespace Damdor.Traduio.Samples
+namespace Damdor.Traduio.Samples.LocalAndRemoteTranslations
 {
     public class DelayedTranslationLoader : ITranslationLoader
     {

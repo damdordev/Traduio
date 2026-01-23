@@ -1,11 +1,10 @@
-using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-namespace Damdor.Traduio.Samples
+namespace Damdor.Traduio.Samples.GettingTranslationForTarget
 {
-    public class Sample_GettingTranslationFromCode : MonoBehaviour
+    public class Game : MonoBehaviour
     {
         private Dictionary<string, string> Translations = new Dictionary<string, string>()
         {

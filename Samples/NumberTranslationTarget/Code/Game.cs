@@ -20,7 +20,7 @@ namespace Damdor.Traduio.Samples.NumberTranslationTarget
         private static async UniTask InitTranslations()
         {
             var manager = new TranslationManager();
-            manager.AddLoader(new ResourceTranslationLoader("number_translation_target"));
+            manager.AddLoader(new ResourceTranslationLoader("Samples/NumberTranslationTarget/translations"));
             manager.Load();
             await manager.WaitForLoad();
             TraduioMainManager.Pointer.Setup(manager);
