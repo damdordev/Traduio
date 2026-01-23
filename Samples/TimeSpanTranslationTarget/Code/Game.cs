@@ -3,7 +3,7 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Damdor.Traduio.Samples.NumberTranslationTarget
+namespace Damdor.Traduio.Samples.TimeSpanTranslationTarget
 {
     public class Game : MonoBehaviour
     {
