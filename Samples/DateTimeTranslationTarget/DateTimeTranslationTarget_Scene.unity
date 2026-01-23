@@ -131,10 +131,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 418622998}
+  - component: {fileID: 418622999}
   - component: {fileID: 418622997}
   - component: {fileID: 418622996}
   - component: {fileID: 418622995}
-  - component: {fileID: 418622999}
   m_Layer: 5
   m_Name: Game
   m_TagString: Untagged
@@ -237,12 +237,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 418622994}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b934150d25fcb0df6b217fcb696dc36e, type: 3}
+  m_Script: {fileID: 11500000, guid: 2be7c6fb7f23ac9ac89e78d8a5b0f5c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   time: {fileID: 1477753269}
-  lessButton: {fileID: 430970172}
-  moreButton: {fileID: 894765964}
+  resetButton1: {fileID: 430970172}
+  resetButton2: {fileID: 894765964}
 --- !u!1 &430970170
 GameObject:
   m_ObjectHideFlags: 0
@@ -256,7 +256,7 @@ GameObject:
   - component: {fileID: 430970173}
   - component: {fileID: 430970172}
   m_Layer: 5
-  m_Name: ButtonLess
+  m_Name: ResetButton1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -450,7 +450,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   key:
     mode: 1
-    value: button.less
+    value: button.reset.1
   parameters: []
 --- !u!222 &890086296
 CanvasRenderer:
@@ -473,7 +473,7 @@ GameObject:
   - component: {fileID: 894765965}
   - component: {fileID: 894765964}
   m_Layer: 5
-  m_Name: ButtonMore
+  m_Name: ResetButton2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -858,13 +858,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1477753264}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ad83b289b4f94ae3b6832688a88785dc, type: 3}
+  m_Script: {fileID: 11500000, guid: 60489b7b46c94f3aaee577fa410968f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 1477753266}
   key: value
-  value:
-    ticks: 638081280000000000
+  endTime:
+    ticks: 0
 --- !u!1 &1494752636
 GameObject:
   m_ObjectHideFlags: 0
@@ -951,7 +951,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   key:
     mode: 1
-    value: button.more
+    value: button.reset.2
   parameters: []
 --- !u!222 &1494752640
 CanvasRenderer:

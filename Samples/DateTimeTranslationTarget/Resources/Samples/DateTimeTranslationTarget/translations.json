@@ -1,5 +1,5 @@
 {
-  "current_value": "Current value: {value}",
+  "current_value": "Current value: {value}s",
   "button.less": "Day earlier",
   "button.more": "Day later"
 }
