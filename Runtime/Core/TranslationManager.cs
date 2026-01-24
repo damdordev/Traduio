@@ -68,6 +68,8 @@ namespace Damdor.Traduio
         /// </code>
         /// </example>
         public event Action Refresh = () => { };
+        public event Action BeforeRefresh = () => { };
+        public event Action AfterRefresh = () => { };
 
         /// <summary>
         /// Gets or sets whether loader errors should be logged to Unity's Debug console.
@@ -420,14 +422,19 @@ namespace Damdor.Traduio
         /// </example>       
         public void SetTranslationProcessor(TranslationProcessor processor) 
             => translationProcessor = processor;
-        
+
         /// <summary>
         /// Triggers the Refresh event to notify all subscribers to update their translations.
         /// </summary>
         /// <remarks>
         /// Call this method after reloading translations to update UI elements.
         /// </remarks>
-        public void RefreshTargets() => Refresh.Invoke();
+        public void RefreshTargets()
+        {
+            BeforeRefresh.Invoke();
+            Refresh.Invoke();
+            AfterRefresh();
+        }
 
         private string Evaluate(SmartTranslationKey key)
         {

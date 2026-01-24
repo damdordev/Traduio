@@ -172,5 +172,11 @@ namespace Damdor.Traduio
             currentText = text;
             Apply(currentText);
         }
+
+        protected override void BeforeAllTargetsApply()
+            => StartChanges();
+
+        protected override void AfterAllTargetsApply()
+            => CommitChanges();
     }
 }

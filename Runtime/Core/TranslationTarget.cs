@@ -148,11 +148,26 @@ namespace Damdor.Traduio
         /// </summary>
         protected abstract void Apply();
         
+        /// <summary>
+        /// Method is invoked before all targets refresh
+        /// </summary>
+        protected virtual void BeforeAllTargetsApply(){}
+        
+        /// <summary>
+        /// Method is invoked after all targets refresh
+        /// </summary>
+        protected virtual void AfterAllTargetsApply(){}
+        
         protected virtual void Awake()
         {
             ManagerPointer.Changed += OnManagerChanged;
             manager = ManagerPointer.Manager;
-            if (manager != null) manager.Refresh += Refresh;
+            if (manager != null)
+            {
+                manager.Refresh += Refresh;
+                manager.BeforeRefresh += BeforeAllTargetsApply;
+                manager.AfterRefresh +=  AfterAllTargetsApply;
+            }
             Refresh();
         }
 
@@ -177,6 +192,8 @@ namespace Damdor.Traduio
             if (manager != null)
             {
                 manager.Refresh -= Refresh;
+                manager.BeforeRefresh -= BeforeAllTargetsApply;
+                manager.AfterRefresh -=  AfterAllTargetsApply;
                 manager = null;
             }
         }
@@ -186,12 +203,16 @@ namespace Damdor.Traduio
             if (manager != null)
             {
                 manager.Refresh -= Refresh;
+                manager.BeforeRefresh -= BeforeAllTargetsApply;
+                manager.AfterRefresh -= AfterAllTargetsApply;
                 manager = null;
             }
             manager = ManagerPointer.Manager;
             if (manager != null)
             {
                 manager.Refresh += Refresh;
+                manager.BeforeRefresh += BeforeAllTargetsApply;
+                manager.AfterRefresh +=  AfterAllTargetsApply;
             }
         }
 

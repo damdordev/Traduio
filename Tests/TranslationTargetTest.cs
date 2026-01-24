@@ -233,6 +233,23 @@ namespace Damdor.Traduio.Tests
 
                 Assert.AreEqual(2, target.Applies);
             });
+
+        [UnityTest]
+        public IEnumerator Test_BeforeAndAfterAllTargetsApply()
+            => UniTask.ToCoroutine(async () =>
+            {
+                // target.gameObject.SetActive(true);
+                // Assert.AreEqual(1, target.Applies);
+                //
+                // target.StartChanges();
+                // target.StartChanges();
+                // target.Refresh();
+                // target.CommitChanges();
+                // Assert.AreEqual(1, target.Applies);
+                // target.CommitChanges();
+                //
+                // Assert.AreEqual(2, target.Applies);
+            });
         
     }
 }
