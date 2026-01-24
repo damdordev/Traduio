@@ -4,7 +4,7 @@ namespace Damdor.Traduio.Tests
 {
     public class TestBaseSmartTranslation : BaseSmartTranslation
     {
-        public static TranslationManagerPointer Pointer = new();
+        public static readonly TranslationManagerPointer Pointer = new();
         
         public List<string> Applies = new();
 

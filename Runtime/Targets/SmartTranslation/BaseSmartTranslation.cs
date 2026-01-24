@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 
 namespace Damdor.Traduio
@@ -32,6 +33,7 @@ namespace Damdor.Traduio
     /// // Result: "Hello, John!"
     /// </code>
     /// </example>
+    [SuppressMessage("ReSharper", "UnusedMember.Global")]
     public abstract class BaseSmartTranslation : TranslationTarget
     {
         /// <summary>
@@ -99,6 +101,7 @@ namespace Damdor.Traduio
         /// translation.SetParameter("itemCount", SmartTranslationKey.Translation("items.count.10");
         /// </code>
         /// </example>
+        [SuppressMessage("ReSharper", "Unity.PerformanceCriticalCodeInvocation")]
         public void SetParameter(string key, SmartTranslationKey value)
         {
             for (var i = 0; i < parameters.Count; i++)
@@ -170,6 +173,7 @@ namespace Damdor.Traduio
             var text = manager.Translate(key, parameters);
             if (text == currentText) return;
             currentText = text;
+            // ReSharper disable once Unity.PerformanceCriticalCodeInvocation
             Apply(currentText);
         }
 

@@ -1,5 +1,6 @@
 #if TRADUIO_UGUI
 
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine.UI;
 
 namespace Damdor.Traduio
@@ -8,6 +9,8 @@ namespace Damdor.Traduio
     {
         private Text target;
         
+        [SuppressMessage("ReSharper", "Unity.PerformanceCriticalCodeInvocation")]
+        [SuppressMessage("ReSharper", "Unity.PerformanceCriticalCodeNullComparison")]
         protected override void Apply(string text)
         {
             if(target == null) target = GetComponent<Text>();

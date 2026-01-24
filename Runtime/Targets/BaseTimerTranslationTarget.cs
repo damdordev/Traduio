@@ -1,10 +1,13 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Damdor.Foundation;
 using Damdor.Fundation;
 using UnityEngine;
+// ReSharper disable ClassWithVirtualMembersNeverInherited.Global
 
 namespace Damdor.Traduio
 {
+    [SuppressMessage("ReSharper", "UnusedMember.Global")]
     public class BaseTimerTranslationTarget : TranslationTarget, ISetupable<DateTime>, ISetupable<TimeSpan>
     {
         public DateTime EndTime
@@ -59,14 +62,16 @@ namespace Damdor.Traduio
         
         protected override void Apply()
         {
-            if (target == null || key == null) return;
+            if (target is null || key == null) return;
             lastTimeSpan = TimeToEnd;
+            // ReSharper disable once Unity.PerformanceCriticalCodeInvocation
             target.SetParameter(key, SmartTranslationKey.Raw(Convert(lastTimeSpan)));
         }
 
         private void Update()
         {
             if (hasLastTimeSpan && Compare(TimeToEnd, lastTimeSpan)) return;
+            // ReSharper disable once Unity.PerformanceCriticalCodeInvocation
             Refresh();
         }
 

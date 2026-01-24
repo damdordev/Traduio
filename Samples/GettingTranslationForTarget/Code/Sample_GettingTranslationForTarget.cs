@@ -6,9 +6,9 @@ namespace Damdor.Traduio.Samples.GettingTranslationForTarget
 {
     public class Game : MonoBehaviour
     {
-        private Dictionary<string, string> Translations = new Dictionary<string, string>()
+        private readonly Dictionary<string, string> Translations = new()
         {
-            { "hello", "This is a simple sample of using Traduio" },
+            { "hello", "This is a simple sample of using Traduio" }
         };
         
         private TranslationManager translationManager;

@@ -8,7 +8,12 @@ namespace Damdor.Traduio.Samples.LocalAndRemoteTranslations
     {
         public BaseSmartTranslation text;
         
-        public async UniTaskVoid Start()
+        private void Start()
+        {
+            Run().Forget();
+        }
+
+        private async UniTask Run()
         {
             text.Key = SmartTranslationKey.Translation("loading");
             await LoadLocalTranslations();
@@ -17,7 +22,7 @@ namespace Damdor.Traduio.Samples.LocalAndRemoteTranslations
             OnFullyLoaded();
         }
 
-        private async UniTask LoadLocalTranslations()
+        private static async UniTask LoadLocalTranslations()
         {
             var manager = new TranslationManager();
             manager.AddLoader(new ResourceTranslationLoader("Samples/LocalAndRemoteTranslations/local_translations"));
@@ -27,7 +32,7 @@ namespace Damdor.Traduio.Samples.LocalAndRemoteTranslations
             manager.RefreshTargets();
         }
         
-        private async UniTask LoadRemoteTranslations()
+        private static async UniTask LoadRemoteTranslations()
         {
             var manager = new TranslationManager();
             manager.AddLoader(new DelayedTranslationLoader(
@@ -40,7 +45,7 @@ namespace Damdor.Traduio.Samples.LocalAndRemoteTranslations
             manager.RefreshTargets();
         }
         
-        private void OnFullyLoaded()
+        private static void OnFullyLoaded()
         {
             Debug.Log("Translations are fully loaded");
             Debug.Log("test: " + TraduioMainManager.Pointer.Manager.GetTranslation("test"));

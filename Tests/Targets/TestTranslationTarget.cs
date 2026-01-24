@@ -3,7 +3,7 @@ namespace Damdor.Traduio.Tests
     public class TestTranslationTarget : TranslationTarget
     {
         public int Applies;
-        public static TranslationManagerPointer Pointer = new();
+        public static readonly TranslationManagerPointer Pointer = new();
         
         protected override TranslationManagerPointer ManagerPointer => Pointer;
 

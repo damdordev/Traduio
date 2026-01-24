@@ -33,6 +33,9 @@ using System.Reflection;
 using System.IO;
 using System.Linq;
 using System.Text;
+// ReSharper disable All
+// ReSharper disable All
+// ReSharper disable All
 
 namespace Damdor.Traduio
 {
@@ -442,7 +445,7 @@ namespace Damdor.Traduio
 		/// <summary>
 		/// Converts a IDictionary / IList object or a simple type (string, int, etc.) into a JSON string
 		/// </summary>
-		/// <param name="json">A Dictionary&lt;string, object&gt; / List&lt;object&gt;</param>
+		/// <param name="obj">A Dictionary&lt;string, object&gt; / List&lt;object&gt;</param>
 		/// <param name="pretty">A boolean to indicate whether or not JSON should be prettified, default is false.</param>
 		/// <param name="indentText">A string to ibe used as indentText, default is 2 spaces.</param>
 		/// <returns>A JSON encoded string, or null if object 'json' is not serializable</returns>

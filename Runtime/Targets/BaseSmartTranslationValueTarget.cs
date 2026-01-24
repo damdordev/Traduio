@@ -1,8 +1,10 @@
+using System.Diagnostics.CodeAnalysis;
 using Damdor.Fundation;
 using UnityEngine;
 
 namespace Damdor.Traduio
 {
+    [SuppressMessage("ReSharper", "UnusedMember.Global")]
     public abstract class BaseSmartTranslationValueTarget<T> : TranslationTarget, ISetupable<T>
     {
         public abstract T Value { get; set; }
@@ -35,6 +37,8 @@ namespace Damdor.Traduio
             Value = value;
         }
         
+        [SuppressMessage("ReSharper", "Unity.PerformanceCriticalCodeInvocation")]
+        [SuppressMessage("ReSharper", "Unity.PerformanceCriticalCodeNullComparison")]
         protected override void Apply()
         {
             if (target == null || key == null) return;

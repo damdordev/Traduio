@@ -336,7 +336,7 @@ namespace Damdor.Traduio.Tests
             {
                 LogAssert.Expect(LogType.Error, new Regex(".*"));
                 manager.LogLoaderErrors = true;
-                manager.SetLoaderErrorHandler((l, e) => { });
+                manager.SetLoaderErrorHandler((_, _) => { });
                 var loader = new ExceptionTranslationLoader(delay, new ArgumentException());
                 manager.AddLoader(loader);
                 manager.Load();
@@ -349,7 +349,7 @@ namespace Damdor.Traduio.Tests
         public IEnumerator CheckIfManagerSupressExceptionInLoaderErrorHandler(float delay)
             => UniTask.ToCoroutine(async () =>
             {
-                manager.SetLoaderErrorHandler((l, e) => throw new ArgumentException());
+                manager.SetLoaderErrorHandler((_, _) => throw new ArgumentException());
                 var loader = new ExceptionTranslationLoader(delay, new ArgumentException());
                 manager.AddLoader(loader);
                 manager.Load();
@@ -405,11 +405,7 @@ namespace Damdor.Traduio.Tests
             => UniTask.ToCoroutine(async () =>
             {
                 var loader = new TestTranslationLoader(TestTranslations, delay);
-                var missingId = "";
-                manager.SetMissingTranslationErrorHandler(id =>
-                {
-                    throw new ArgumentException();
-                });
+                manager.SetMissingTranslationErrorHandler(_ => throw new ArgumentException());
                 manager.AddLoader(loader);
                 manager.Load();
                 await manager.WaitForLoad();
@@ -426,8 +422,7 @@ namespace Damdor.Traduio.Tests
                 manager.SetTranslationProcessor((key, translation, loader) =>
                 {
                     if (loader == firstLoader) return $"loader1:{key}:{translation}";
-                    if (loader == otherLoader) return $"loader2:{key}:{translation}";
-                    return "";
+                    return loader == otherLoader ? $"loader2:{key}:{translation}" : "";
                 });
                 manager.AddLoader(firstLoader);
                 manager.AddLoader(otherLoader);
@@ -444,11 +439,7 @@ namespace Damdor.Traduio.Tests
             => UniTask.ToCoroutine(async () =>
             {
                 var firstLoader = new TestTranslationLoader(TestTranslations, delay);
-                manager.SetTranslationProcessor((key, translation, loader) =>
-                {
-                    if (loader == null) return $"processor-missing:{key}";
-                    return translation;
-                });
+                manager.SetTranslationProcessor((key, translation, loader) => loader == null ? $"processor-missing:{key}" : translation);
                 manager.AddLoader(firstLoader);
                 manager.Load();
                 await manager.WaitForLoad();
@@ -462,7 +453,7 @@ namespace Damdor.Traduio.Tests
             => UniTask.ToCoroutine(async () =>
             {
                 var firstLoader = new TestTranslationLoader(TestTranslations, delay);
-                manager.SetTranslationProcessor((key, translation, loader) => throw new ArgumentException());
+                manager.SetTranslationProcessor((_, _, _) => throw new ArgumentException());
                 manager.AddLoader(firstLoader);
                 manager.Load();
                 await manager.WaitForLoad();
@@ -475,7 +466,7 @@ namespace Damdor.Traduio.Tests
             => UniTask.ToCoroutine(async () =>
             {
                 var firstLoader = new TestTranslationLoader(TestTranslations, delay);
-                manager.SetTranslationProcessor((key, translation, loader) => throw new ArgumentException());
+                manager.SetTranslationProcessor((_, _, _) => throw new ArgumentException());
                 manager.AddLoader(firstLoader);
                 manager.Load();
                 await manager.WaitForLoad();
@@ -589,7 +580,7 @@ namespace Damdor.Traduio.Tests
             => UniTask.ToCoroutine(async () =>
             {
                 var errorCount = 0;
-                manager.SetLoaderErrorHandler((loader, exception) =>
+                manager.SetLoaderErrorHandler((_, _) =>
                 {
                     ++errorCount;
                 });
@@ -672,7 +663,7 @@ namespace Damdor.Traduio.Tests
                     Value = value
                 };
                 
-                Assert.AreEqual(expectedValue, manager.Translate(pointer, null));
+                Assert.AreEqual(expectedValue, manager.Translate(pointer));
             });
         
         [UnityTest]
@@ -747,7 +738,7 @@ namespace Damdor.Traduio.Tests
                     Key = parameterKey, Value = new SmartTranslationKey
                     {
                         Mode = parameterMode,
-                        Value = parameterValue,
+                        Value = parameterValue
                     }
                 };
                 var parameters = new List<SmartTranslationParameter> { parameter };

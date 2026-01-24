@@ -141,17 +141,17 @@ namespace Damdor.Traduio.Tests
             target.enabled = true;
         }
         
-        private TestBaseSmartTranslation CreateTarget(string initKey)
+        private static TestBaseSmartTranslation CreateTarget(string initKey)
         {
             var go = new GameObject("target");
             go.SetActive(false);
-            var target = go.AddComponent<TestBaseSmartTranslation>();
-            target.Key = new SmartTranslationKey
+            var t = go.AddComponent<TestBaseSmartTranslation>();
+            t.Key = new SmartTranslationKey
             {
                 Mode = SmartTranslationKeyMode.Translation, 
                 Value = initKey
             };
-            return target;
+            return t;
         }
     }
 }

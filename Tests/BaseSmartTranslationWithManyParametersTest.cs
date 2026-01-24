@@ -90,7 +90,7 @@ namespace Damdor.Traduio.Tests
             parameter.Key = key;
         }
 
-        private async UniTask CreateManager(Dictionary<string, string> translations)
+        private static async UniTask CreateManager(Dictionary<string, string> translations)
         {
             var manager = new TranslationManager();
             manager.AddLoader(new DictionaryTranslationLoader(translations));

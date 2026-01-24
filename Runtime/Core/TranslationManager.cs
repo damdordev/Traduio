@@ -177,7 +177,7 @@ namespace Damdor.Traduio
         /// </example>
         public string GetTranslation(string key)
         {
-            if (key == null) key = "";
+            key ??= "";
             foreach (var data in loaders)
             {
                 if (data.Translations != null && data.Translations.HasTranslation(key))
@@ -203,7 +203,7 @@ namespace Damdor.Traduio
         /// </remarks>
         public bool HasTranslation(string key)
         {
-            if (key == null) key = "";
+            key ??= "";
             foreach (var data in loaders)
             {
                 if (data.LoadFinished && data.Translations != null && data.Translations.HasTranslation(key)) return true;
@@ -295,13 +295,11 @@ namespace Damdor.Traduio
         {
             if (string.IsNullOrWhiteSpace(key.Value)) return "";
             var value = Evaluate(key);
-            if (parameters != null && parameters.Count > 0)
+            if (parameters == null || parameters.Count <= 0) return value;
+            foreach (var parameter in parameters)
             {
-                foreach (var parameter in parameters)
-                {
-                    if(string.IsNullOrWhiteSpace(parameter.Key)) continue;
-                    value = value.Replace("{" + parameter.Key + "}", Evaluate(parameter.Value));
-                }
+                if(string.IsNullOrWhiteSpace(parameter.Key)) continue;
+                value = value.Replace("{" + parameter.Key + "}", Evaluate(parameter.Value));
             }
 
             return value;

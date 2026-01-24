@@ -176,6 +176,7 @@ namespace Damdor.Traduio
             if (needRefresh) Refresh();
         }
         
+        // ReSharper disable once Unity.RedundantEventFunction
         protected virtual void OnDisable()
         {
             
@@ -189,13 +190,11 @@ namespace Damdor.Traduio
         protected virtual void OnDestroy()
         {
             ManagerPointer.Changed -= OnManagerChanged;
-            if (manager != null)
-            {
-                manager.Refresh -= Refresh;
-                manager.BeforeRefresh -= BeforeAllTargetsApply;
-                manager.AfterRefresh -=  AfterAllTargetsApply;
-                manager = null;
-            }
+            if (manager == null) return;
+            manager.Refresh -= Refresh;
+            manager.BeforeRefresh -= BeforeAllTargetsApply;
+            manager.AfterRefresh -=  AfterAllTargetsApply;
+            manager = null;
         }
 
         private void OnManagerChanged()
@@ -208,12 +207,10 @@ namespace Damdor.Traduio
                 manager = null;
             }
             manager = ManagerPointer.Manager;
-            if (manager != null)
-            {
-                manager.Refresh += Refresh;
-                manager.BeforeRefresh += BeforeAllTargetsApply;
-                manager.AfterRefresh +=  AfterAllTargetsApply;
-            }
+            if (manager == null) return;
+            manager.Refresh += Refresh;
+            manager.BeforeRefresh += BeforeAllTargetsApply;
+            manager.AfterRefresh +=  AfterAllTargetsApply;
         }
 
         /// <summary>
@@ -229,6 +226,7 @@ namespace Damdor.Traduio
             }
             needRefresh = false;
             if (manager == null) return;
+            // ReSharper disable once Unity.PerformanceCriticalCodeInvocation
             Apply();
         }
         

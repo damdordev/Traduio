@@ -1,8 +1,10 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 
 namespace Damdor.Traduio
 {
+    [SuppressMessage("ReSharper", "UnusedMethodReturnValue.Global")]
     public interface ITranslationLoaderSettings
     {
         ITranslationLoaderSettings WithPriority(int priority);
