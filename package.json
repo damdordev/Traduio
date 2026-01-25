@@ -1,6 +1,6 @@
 {
   "name": "com.damdor.traduio",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "displayName": "Traduio",
   "description": "Translation library",
   "unity": "2022.3",
@@ -11,6 +11,9 @@
     "type": "git",
     "url": "https://github.com/damdordev/Traduio.git"
   },
+  "dependencies": {
+    "com.damdor.foundation": "1.0.1"
+  },  
   "samples": [
     {
       "displayName": "Getting translation from code",
