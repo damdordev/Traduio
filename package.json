@@ -1,0 +1,51 @@
+{
+  "name": "com.damdor.traduio",
+  "version": "1.0.0",
+  "displayName": "Traduio",
+  "description": "Translation library",
+  "unity": "2022.3",
+  "publishConfig": {
+    "registry": "https://upm.pckgs.io"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/damdordev/Traduio.git"
+  },
+  "samples": [
+    {
+      "displayName": "Getting translation from code",
+      "description": "Shows how to get translation from code",
+      "path": "Samples~/GettingTranslationFromCode"    
+    },
+    {
+      "displayName": "Getting translation for target",
+      "description": "Shows how use simple TranslationTarget",
+      "path": "Samples~/GettingTranslationForTarget"    
+    },
+    {
+      "displayName": "Number translation target",
+      "description": "Shows how to use translation target",
+      "path": "Samples~/NumberTranslationTarget"    
+    },
+    {
+      "displayName": "TimeSpan translation target",
+      "description": "Shows how to use TimeSpan target",
+      "path": "Samples~/TimeSpanTranslationTarget"    
+    },
+    {
+      "displayName": "DateTime translation target",
+      "description": "Shows how to use DateTime target",
+      "path": "Samples~/DateTimeTranslationTarget"    
+    },
+    {
+      "displayName": "Timer translation target",
+      "description": "Shows how to use timer target",
+      "path": "Samples~/TimerTranslationTarget"    
+    }, 
+    {
+      "displayName": "Local and remote translations",
+      "description": "Shows how split translations into two parts: embeded and loaded from external source",
+      "path": "Samples~/LocalAndRemoteTranslations"    
+    }                                    
+  ]  
+}
