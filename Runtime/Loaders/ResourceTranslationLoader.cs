@@ -11,15 +11,19 @@ namespace Damdor.Traduio
         public string Id => $"Resource[{path}]";
         
         private readonly string path;
+        private readonly bool async;
 
-        public ResourceTranslationLoader(string path)
+        public ResourceTranslationLoader(string path, bool async)
         {
             this.path = path;
+            this.async = async;
         }
         
-        public UniTask<ITranslationLibrary> Load(CancellationToken cancellationToken)
+        public async UniTask<ITranslationLibrary> Load(CancellationToken cancellationToken)
         {
-            var asset = Resources.Load<TextAsset>(path);
+            TextAsset asset;
+            if (async) asset = (TextAsset) await Resources.LoadAsync<TextAsset>(path);
+            else asset = Resources.Load<TextAsset>(path);
             var text = asset.text;
             Resources.UnloadAsset(asset);
             var result = (Json.Deserialize(text) as Dictionary<string, object>)!.ToDictionary(
@@ -27,7 +31,7 @@ namespace Damdor.Traduio
                 kvp => kvp.Value.ToString()
             );
 
-            return UniTask.FromResult<ITranslationLibrary>(new DictionaryTranslationLibrary(result));
+            return new DictionaryTranslationLibrary(result);
         }
     }
 }

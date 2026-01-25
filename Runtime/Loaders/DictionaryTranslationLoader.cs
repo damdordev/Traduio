@@ -10,7 +10,7 @@ namespace Damdor.Traduio
 
         public DictionaryTranslationLoader(IDictionary<string, string> translations, string id = null)
         {
-            this.translations = translations;
+            this.translations = new Dictionary<string, string>(translations);
             Id = string.IsNullOrEmpty(id) ? "Dictionary" : $"Dictionary[{id}]";
         }
 
