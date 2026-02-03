@@ -184,6 +184,7 @@ namespace Damdor.Traduio
 
         protected virtual void OnValidate()
         {
+            if (string.IsNullOrEmpty(gameObject.scene.path)) return;
             Refresh();
         }
 
