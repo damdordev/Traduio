@@ -1,5 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
-using Damdor.Fundation;
+using Damdor.Foundation;
 using UnityEngine;
 
 namespace Damdor.Traduio

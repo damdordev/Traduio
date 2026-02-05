@@ -1,7 +1,6 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using Damdor.Foundation;
-using Damdor.Fundation;
 using UnityEngine;
 // ReSharper disable ClassWithVirtualMembersNeverInherited.Global
 
