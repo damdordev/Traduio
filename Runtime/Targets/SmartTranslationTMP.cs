@@ -1,8 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using TMPro;
 
-#if TRADUIO_TEXT_MESH_PRO
-
 namespace Damdor.Traduio
 {
     public class SmartTranslationTMP : BaseSmartTranslation
@@ -19,5 +17,3 @@ namespace Damdor.Traduio
         }
     }
 }
-
-#endif

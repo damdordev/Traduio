@@ -1,13 +1,15 @@
+#if DAMDOR_TRADUIO_TYPIO
+
 using System;
 using System.Diagnostics.CodeAnalysis;
-using Damdor.Foundation;
+using Damdor.Typio;
 using UnityEngine;
 // ReSharper disable ClassWithVirtualMembersNeverInherited.Global
 
 namespace Damdor.Traduio
 {
     [SuppressMessage("ReSharper", "UnusedMember.Global")]
-    public class BaseTimerTranslationTarget : TranslationTarget, ISetupable<DateTime>, ISetupable<TimeSpan>
+    public class BaseTimerTranslationTarget : TranslationTarget
     {
         public DateTime EndTime
         {
@@ -79,3 +81,5 @@ namespace Damdor.Traduio
         protected virtual bool Compare(TimeSpan timeSpan1, TimeSpan timeSpan2) => (int) timeSpan1.TotalSeconds == (int) timeSpan2.TotalSeconds;
     }
 }
+
+#endif

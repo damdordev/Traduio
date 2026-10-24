@@ -4,7 +4,8 @@
     "references": [
         "GUID:f51ebe6a0ceec4240a699833d6309b23",
         "GUID:6055be8ebefd69e48b49212b09b47b2f",
-        "GUID:27e601c55f5bb36b785408d5c9f7d3b1"
+        "GUID:27e601c55f5bb36b785408d5c9f7d3b1",
+        "GUID:7cfa116c53e507cb4ac7d0522a2fe3c6"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -23,6 +24,11 @@
             "name": "com.unity.ugui",
             "expression": "",
             "define": "TRADUIO_UGUI"
+        },
+        {
+            "name": "com.damdor.typio",
+            "expression": "",
+            "define": "DAMDOR_TRADUIO_TYPIO"
         }
     ],
     "noEngineReferences": false

@@ -12,7 +12,6 @@
     "url": "https://github.com/damdordev/Traduio.git"
   },
   "dependencies": {
-    "com.damdor.foundation": "1.0.0",
-    "com.cysharp.unitask.compatible": "2.3.1"    
+    "com.cysharp.unitask": "2.5.0"
   }  
 }

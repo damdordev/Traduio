@@ -1,11 +1,10 @@
 using System.Diagnostics.CodeAnalysis;
-using Damdor.Foundation;
 using UnityEngine;
 
 namespace Damdor.Traduio
 {
     [SuppressMessage("ReSharper", "UnusedMember.Global")]
-    public abstract class BaseSmartTranslationValueTarget<T> : TranslationTarget, ISetupable<T>
+    public abstract class BaseSmartTranslationValueTarget<T> : TranslationTarget
     {
         public abstract T Value { get; set; }
 

@@ -1,5 +1,7 @@
+#if DAMDOR_TRADUIO_TYPIO
+
 using System;
-using Damdor.Foundation;
+using Damdor.Typio;
 using UnityEngine;
 
 namespace Damdor.Traduio
@@ -21,3 +23,5 @@ namespace Damdor.Traduio
         protected override string Convert(DateTime value) => value.ToString("yyyy-MM-dd HH:mm:ss");
     }
 }
+
+#endif

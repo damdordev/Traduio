@@ -53,6 +53,7 @@ namespace Damdor.Traduio
     /// target.CommitChanges(); // Single refresh for all changes
     /// </code>
     /// </example>
+    [ExecuteAlways]
     public abstract class TranslationTarget : MonoBehaviour
     {
         private int changesLevel;

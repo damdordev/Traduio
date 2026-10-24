@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
-using Damdor.Foundation;
 
 namespace Damdor.Traduio
 {
@@ -27,6 +26,7 @@ namespace Damdor.Traduio
             else asset = Resources.Load<TextAsset>(path);
             var text = asset.text;
             Resources.UnloadAsset(asset);
+            
             var result = (Json.Deserialize(text) as Dictionary<string, object>)!.ToDictionary(
                 k => k.Key,
                 kvp => kvp.Value.ToString()
