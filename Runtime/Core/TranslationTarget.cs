@@ -1,3 +1,5 @@
+using System;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace Damdor.Traduio
@@ -166,12 +168,12 @@ namespace Damdor.Traduio
             if (manager != null)
             {
                 manager.Refresh += Refresh;
-                manager.BeforeRefresh += BeforeAllTargetsApply;
-                manager.AfterRefresh +=  AfterAllTargetsApply;
+                manager.BeforeRefresh += RunBeforeAllTargetsApply;
+                manager.AfterRefresh +=  RunAfterAllTargetsApply;
             }
             Refresh();
         }
-
+        
         protected virtual void OnEnable()
         {
             if (needRefresh) Refresh();
@@ -194,8 +196,8 @@ namespace Damdor.Traduio
             ManagerPointer.Changed -= OnManagerChanged;
             if (manager == null) return;
             manager.Refresh -= Refresh;
-            manager.BeforeRefresh -= BeforeAllTargetsApply;
-            manager.AfterRefresh -=  AfterAllTargetsApply;
+            manager.BeforeRefresh -= RunBeforeAllTargetsApply;
+            manager.AfterRefresh -= RunAfterAllTargetsApply;
             manager = null;
         }
 
@@ -229,7 +231,38 @@ namespace Damdor.Traduio
             needRefresh = false;
             if (manager == null) return;
             // ReSharper disable once Unity.PerformanceCriticalCodeInvocation
-            Apply();
+            try
+            {
+                Apply();
+            }
+            catch (Exception e)
+            {
+                manager?.NotifyRefreshTargetErrorHandler(this, e);
+            }
+        }
+        
+        private void RunBeforeAllTargetsApply()
+        {
+            try
+            {
+                BeforeAllTargetsApply();
+            }
+            catch (Exception e)
+            {
+                manager?.NotifyRefreshTargetErrorHandler(this, e);
+            }
+        }
+
+        private void RunAfterAllTargetsApply()
+        {
+            try
+            {
+                AfterAllTargetsApply();
+            }
+            catch (Exception e)
+            {
+                manager?.NotifyRefreshTargetErrorHandler(this, e);
+            }
         }
         
     }

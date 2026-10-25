@@ -65,6 +65,7 @@ namespace Damdor.Traduio
         {
             if (target is null || key == null) return;
             lastTimeSpan = TimeToEnd;
+            hasLastTimeSpan = true;
             // ReSharper disable once Unity.PerformanceCriticalCodeInvocation
             target.SetParameter(key, SmartTranslationKey.Raw(Convert(lastTimeSpan)));
         }

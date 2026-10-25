@@ -81,6 +81,8 @@ namespace Damdor.Traduio
         private LoaderErrorHandler loaderErrorHandler;
         private MissingTranslationErrorHandler missingTranslationErrorHandler;
         private TranslationProcessor translationProcessor;
+        private RefreshTargetErrorHandler refreshTargetErrorHandler;
+        private bool isDisposed;
         
         /// <summary>
         /// Adds a translation loader to the manager with configurable settings.
@@ -154,6 +156,7 @@ namespace Damdor.Traduio
         {
             foreach (var t in loaders) t.Cancel();
             loaders.Clear();
+            isDisposed = true;
         }
 
         /// <summary>
@@ -374,6 +377,22 @@ namespace Damdor.Traduio
             => loaderErrorHandler = handler;
 
         /// <summary>
+        /// Sets the error handler for handling exceptions that occur during the refresh process of a translation target.
+        /// </summary>
+        /// <param name="handler">The error handler callback to invoke when a refresh target error occurs. Cannot be null.</param>
+        /// <remarks>
+        /// This method allows you to define custom logic to handle exceptions raised when refreshing translation targets.
+        /// If no handler is provided, refresh target errors may not be explicitly handled and will be silently ignored.
+        /// </remarks>
+        public void SetRefreshTargetErrorHandler(RefreshTargetErrorHandler handler)
+            => refreshTargetErrorHandler = handler;
+
+        internal void NotifyRefreshTargetErrorHandler(TranslationTarget target, Exception exception)
+        {
+            refreshTargetErrorHandler?.Invoke(target, exception);
+        }
+
+        /// <summary>
         /// Sets a custom error handler for missing translation keys.
         /// </summary>
         /// <param name="handler">Delegate called when GetTranslation() doesn't find a key.</param>
@@ -456,7 +475,7 @@ namespace Damdor.Traduio
         
         private async UniTask Load(LoaderData data)
         {
-          while (!data.LoadFinished && !data.IsRemoved)
+          while (!data.LoadFinished && !data.DuringLoading && !data.IsRemoved && !isDisposed)
           {
               await TryLoad(data);
               if (data.Translations == null) --data.RetriesLeft;
@@ -466,14 +485,19 @@ namespace Damdor.Traduio
 
         private async UniTask TryLoad(LoaderData data)
         {
-            if (data.LoadFinished) return;
+            if (data.LoadFinished || data.DuringLoading) return;
+            data.DuringLoading = true;
             data.CancellationTokenSource = new CancellationTokenSource();
             try
             {
                 var task = data.Loader.Load(data.CancellationTokenSource.Token);
-                if(data.Timeout != TimeSpan.Zero) task = task.Timeout(data.Timeout);
+                if(data.Timeout != TimeSpan.Zero) task = task.Timeout(data.Timeout, delayType: DelayType.Realtime);
                 data.Translations = await task;
-                if (data.Translations == null) throw new EmptyTranslationException();
+                if (data.Translations == null)
+                {
+                    data.CancellationTokenSource.Cancel(false);
+                    throw new EmptyTranslationException();
+                }
             }
             catch (Exception e)
             {
@@ -486,6 +510,7 @@ namespace Damdor.Traduio
 
             data.CancellationTokenSource?.Dispose();
             data.CancellationTokenSource = null;
+            data.DuringLoading = false;
             await UniTask.SwitchToMainThread();
         }
 

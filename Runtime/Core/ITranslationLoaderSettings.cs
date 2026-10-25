@@ -17,6 +17,7 @@ namespace Damdor.Traduio
         public ITranslationLoader Loader;
         public ITranslationLibrary Translations;
         public bool LoadFinished;
+        public bool DuringLoading;
         public CancellationTokenSource CancellationTokenSource;
         public bool IsRemoved;
         public int Priority;
